@@ -3,25 +3,17 @@ MAINTAINER Mark Stillwell <mark@stillwell.me>
 
 ENV DEBIAN_FRONTEND noninteractive
 
-COPY . /var/cache/docker/mariadb
-WORKDIR /var/cache/docker/mariadb
-RUN mkdir -p roles && ln -snf .. roles/marklee77.mariadb 
-RUN ansible-playbook -i inventories/local.ini deploy.yml -e '{ \
-        "mariadb_enable_remote" : true, \
-        "mariadb_set_root_password" : false, \
-        "mariadb_dockerized_deployment" : false }' && \
+COPY . /var/cache/docker/keystone
+WORKDIR /var/cache/docker/keystone
+RUN mkdir -p roles && ln -snf .. roles/marklee77.keystone
+RUN ansible-playbook -i inventories/local.ini deploy.yml \
+        -e '{ "mariadb_dockerize_context" : "install" }' && \
     rm -rf private && \
-    service mysql stop
+    service keystone stop
 
-VOLUME ["/etc/mysql", "/var/run/mysqld", "/usr/lib/mysql"]
+VOLUME ["/root", "/etc/keystone", "/var/run/keystone", "/usr/lib/keystone", \
+        "/var/log" ]
 
-CMD [ "/usr/sbin/mysqld", \
-      "--basedir=/usr", \
-      "--datadir=/var/lib/mysql", \
-      "--pid-file=/var/run/mysqld/mysqld.pid", \
-      "--plugin-dir=/usr/lib/mysql/plugin", \
-      "--port=3306", \
-      "--socket=/var/run/mysqld/mysqld.sock", \
-      "--user=mysql" ]
+CMD [ "/usr/sbin/keystone" ]
 
-EXPOSE 3306
+EXPOSE 35357

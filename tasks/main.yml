@@ -1,6 +1,18 @@
 ---
-- include: dockerized.yml
-  when: mariadb_dockerized_deployment
+- include: docker.yml
+  when: keystone_dockerized_deployment
 
-- include: direct.yml
-  when: not mariadb_dockerized_deployment
+- include: install.yml
+  when: not keystone_dockerized_deployment and (
+        keystone_dockerize_context is not defined or
+        keystone_dockerize_context == "install" )
+
+- include: offline_configuration.yml
+  when: not keystone_dockerized_deployment and (
+        keystone_dockerize_context is not defined or
+        keystone_dockerize_context == "offline_configuration" )
+
+- include: online_configuration.yml
+  when: not keystone_dockerized_deployment and (
+        keystone_dockerize_context is not defined or
+        keystone_dockerize_context == "online_configuration" )

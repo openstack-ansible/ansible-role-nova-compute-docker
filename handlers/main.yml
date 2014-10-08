@@ -1,14 +1,23 @@
 ---
-- name: restart mariadb
+- name: restart keystone
   service: 
-    name: mysql
+    name: keystone
     state: restarted
+  when: not keystone_dockerized_deploy and
+        keystone_dockerize_context is not defined
 
-# FIXME: this could be done with a script, but would that be more secure?
-- name: set mariadb remote root password
+- name: perform keystone docker online configuration
   docker:
-    image: "{{ mariadb_docker_username }}/mariadb"
-    volumes_from: mariadb_data
-    detach: False
-    command: mysql mysql -e "GRANT ALL PRIVILEGES on *.* TO 'root'@'%' IDENTIFIED BY '{{ mariadb_mysql_root_password }}' WITH GRANT OPTION;"
+    image: "{{ keystone_docker_username }}/{{ keystone_docker_imagename }}"
+    name: "{{ keystone_docker_containername }}_configure"
+    volumes_from: "{{ keystone_docker_containername }}_data"
+    detach: no
+    command: >
+              ansible-playbook -i inventories/local.ini deploy.yml -e '{
+                "keystone_dockerize_context" : "online_configuration",
+                "keystone_mysql_root_password" : 
+                  "{{ keystone_mysql_root_password }}",
+                "keystone_mysql_keystone_password" : 
+                  "{{ keystone_mysql_keystone_password }}" }'
+    state: present
 

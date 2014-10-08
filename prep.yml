@@ -9,9 +9,9 @@
   gather_facts: False
   sudo: True
   tasks:
-    - name: ensure python-mysqldb module is installed
+    - name: ensure python-keystoneclient module is installed
       apt:
-        pkg: python-mysqldb
+        pkg: python-keystoneclient
         state: latest
         update_cache: yes
         cache_valid_time: 600

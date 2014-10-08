@@ -9,3 +9,9 @@
         repo: 'https://github.com/marklee77/ansible-role-docker.git'
         dest: roles/marklee77.docker
         update: yes
+
+    - name: check out roles needed for demo deployment from github.com
+      git:
+        repo: 'https://github.com/marklee77/ansible-role-mariadb.git'
+        dest: roles/marklee77.mariadb
+        update: yes
