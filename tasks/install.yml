@@ -27,7 +27,8 @@
         value: "{{ keystone_admin_token }}" }
     - { section: DEFAULT, option: log_dir, value: "{{ keystone_log_dir }}" }
     - { section: database, option: connection, 
-        value: "mysql://keystone:{{ keystone_mysql_keystone_password }}@{{ keystone_mysql_host }}:{{ keystone_mysql_port }}/keystone" }
+        value: "mysql://keystone:{{ keystone_mysql_keystone_password }}@{{ 
+                 keystone_mysql_host }}:{{ keystone_mysql_port }}/keystone" }
   notify:
     - restart keystone
 

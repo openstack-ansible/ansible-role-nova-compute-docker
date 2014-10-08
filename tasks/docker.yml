@@ -1,0 +1,49 @@
+---
+- name: ensure dockerfile directories exist
+  file:
+    path: "{{ item }}"
+    owner: "{{ ansible_ssh_user }}"
+    mode: 0700
+    state: directory
+  with_items:
+    - "{{ ansible_env.PWD }}/.ansible_cache"
+    - "{{ ansible_env.PWD }}/.ansible_cache/docker"
+
+- name: copy role to remote cache for Dockerfile build
+  synchronize:
+    src: ../
+    dest: "{{ ansible_env.PWD }}/.ansible_cache/docker/keystone"
+    delete: yes
+
+- name: ensure keystone docker image has been built
+  docker_image:
+    name: "{{ keystone_docker_username }}/keystone"
+    path: "{{ ansible_env.PWD }}/.ansible_cache/docker/keystone"
+    state: present
+
+- name: ensure keystone data container exists
+  docker:
+    image: "{{ keystone_docker_username }}/{{ keystone_docker_imagename }}"
+    name: "{{ keystone_docker_containername }}_data"
+    command: >
+              ansible-playbook -i inventories/local.ini deploy.yml -e '{ 
+                "keystone_dockerize_context" : "offline_configuration", 
+                "mariadb_bind_address" : "0.0.0.0", 
+                "mariadb_port" : 3306 }'
+    detach: no
+    state: present
+
+- name: need to pause between creation of data container and starting server
+  pause:
+    seconds: 1
+
+- name: ensure keystone service is running
+  docker:
+    image: "{{ keystone_docker_username }}/{{ keystone_docker_imagename }}"
+    name: "{{ keystone_docker_containername }}_server"
+    volumes_from: "{{ keystone_docker_containername }}_data"
+    ports: "{{ keystone_bind_address }}:{{ keystone_port }}:35357"
+    detach: yes
+    state: running
+  notify:
+    - perform keystone docker online configuration
