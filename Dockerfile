@@ -10,7 +10,6 @@ RUN ansible-playbook -i inventories/local.ini deploy.yml -e '{ \
 
 VOLUME [ "/etc/keystone", "/var/lib/keystone", "/var/log/keystone" ]
 
-USER keystone
-CMD [ "/usr/bin/keystone-all" ]
+CMD [ "sudo", "-u", "keystone", "/usr/bin/keystone-all" ]
 
 EXPOSE 5000 35357
