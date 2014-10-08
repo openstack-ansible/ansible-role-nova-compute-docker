@@ -1,1 +1,27 @@
 ---
+- hosts: all
+  sudo: True
+  tasks:
+
+    - name: create demo tenant
+      keystone_user:
+        endpoint: "{{ keystone_admin_url }}"
+        token: "{{ keystone_admin_token }}"
+        tenant: demo
+        tenant_description: "Demo Tenant"
+
+    - name: create demo user
+      keystone_user:
+        endpoint: "{{ keystone_admin_url }}"
+        token: "{{ keystone_admin_token }}"
+        tenant: demo
+        user: demo
+        password: "{{ keystone_keystone_demo_password }}"
+
+    - name: associate _member_ role with demo user
+      keystone_user:
+        endpoint: "{{ keystone_admin_url }}"
+        token: "{{ keystone_admin_token }}"
+        tenant: demo
+        user: demo
+        role: _member_

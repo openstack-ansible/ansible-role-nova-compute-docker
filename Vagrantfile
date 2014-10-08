@@ -30,12 +30,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision "ansible" do |ansible|
     ansible.playbook = "deploy.yml"
     #ansible.extra_vars = {
-    #  keystone_dockerized_deployment: true
+    #  keystone_dockerized_deployment: true,
+    #  keystone_mysql_host: "{{ ansible_docker0['ipv4']['address'] }}"
     #}
   end
 
-  #config.vm.provision "ansible" do |ansible|
-  #  ansible.playbook = "demo.yml"
-  #end
+  config.vm.provision "ansible" do |ansible|
+    ansible.playbook = "demo.yml"
+  end
 
 end

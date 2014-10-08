@@ -1,46 +1,50 @@
 ---
-- name: ensure keystone is properly configured
-  ini_file:
-    dest: /etc/keystone/keystone.conf
-    section: "{{ item.section }}"
-    option: "{{ item.option }}"
-    value: "{{ item.value }}"
-  with_items:
-    - { section: DEFAULT, option: admin_token,
-        value: "{{ keystone_admin_token }}" }
-    - { section: DEFAULT, option: log_dir, value: "{{ keystone_log_dir }}" }
-    - { section: database, option: connection,
-        value: "mysql://keystone:{{ keystone_mysql_keystone_password }}@{{ keystone_mysql_host }}:{{ keystone_mysql_port }}/keystone" }
-  notify:
-    - restart keystone
+- name: create admin tenant
+  keystone_user:
+    endpoint: "{{ keystone_admin_url }}"
+    token: "{{ keystone_admin_token }}"
+    tenant: admin
+    tenant_description: "Admin Tenant"
 
-- name: update mariadb root password for local root account
-  mysql_user: 
-    name: root 
-    host: localhost 
-    password: "{{ mariadb_mysql_root_password }}"
-    priv: "*.*:ALL,GRANT"
-    state: present
+- name: create admin user
+  keystone_user:
+    endpoint: "{{ keystone_admin_url }}"
+    token: "{{ keystone_admin_token }}"
+    tenant: admin
+    user: admin
+    password: "{{ keystone_keystone_admin_password }}"
 
-# Need to do this for idempotency, see
-# http://ansible.cc/docs/modules.html#mysql-user
-- name: update .my.cnf file with root password credentials
-  template: 
-    src: root/.my.cnf 
-    dest: /root/.my.cnf 
-    owner: root 
-    group: root 
-    mode: 0600
+- name: create admin role and associate it with admin user
+  keystone_user:
+    endpoint: "{{ keystone_admin_url }}"
+    token: "{{ keystone_admin_token }}"
+    tenant: admin
+    user: admin
+    role: admin
 
-- name: update mariadb root password for all other local root accounts
-  mysql_user: 
-    name: root 
-    host: "{{ item }}" 
-    password: "{{ mariadb_mysql_root_password }}" 
-    priv: "*.*:ALL,GRANT"
-    state: present
-  with_items:
-    - "{{ ansible_hostname }}"
-    - 127.0.0.1
-    - ::1
+- name: associate _member_ role with the admin user
+  keystone_user:
+    endpoint: "{{ keystone_admin_url }}"
+    token: "{{ keystone_admin_token }}"
+    tenant: admin
+    user: admin
+    role: _member_
 
+- name: create service tenant
+  keystone_user:
+    endpoint: "{{ keystone_admin_url }}"
+    token: "{{ keystone_admin_token }}"
+    tenant: service
+    tenant_description: "Service Tenant"
+
+- name: add keystone endpoint information
+  keystone_service:
+    endpoint: "{{ keystone_admin_url }}"
+    token: "{{ keystone_admin_token }}"
+    region: "{{ keystone_region }}"
+    name: keystone
+    type: identity
+    description: "Identity Service"
+    public_url: "{{ keystone_public_url }}"
+    internal_url: "{{ keystone_internal_url }}"
+    admin_url: "{{ keystone_admin_url }}"

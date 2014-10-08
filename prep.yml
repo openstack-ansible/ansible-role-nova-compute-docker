@@ -4,6 +4,7 @@
   sudo: True
   roles:
     - marklee77.docker
+    - marklee77.mariadb
 
 - hosts: all
   gather_facts: False

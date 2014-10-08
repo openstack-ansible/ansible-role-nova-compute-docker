@@ -9,34 +9,8 @@
     - python-mysqldb
     - keystone
 
-- name: ensure keystone sqlite is deleted
-  file:
-    dest: /var/lib/keystone/keystone.sqlite
-    state: absent
-  notify:
-    - restart keystone
-
-- name: ensure keystone is properly configured
-  ini_file:
-    dest: /etc/keystone/keystone.conf
-    section: "{{ item.section }}"
-    option: "{{ item.option }}"
-    value: "{{ item.value }}"
-  with_items:
-    - { section: DEFAULT, option: admin_token, 
-        value: "{{ keystone_admin_token }}" }
-    - { section: DEFAULT, option: log_dir, value: "{{ keystone_log_dir }}" }
-    - { section: database, option: connection, 
-        value: "mysql://keystone:{{ keystone_mysql_keystone_password }}@{{ 
-                 keystone_mysql_host }}:{{ keystone_mysql_port }}/keystone" }
-  notify:
-    - restart keystone
-
 - name: ensure keystone is started and enabled
   service: 
     name: keystone
     state: started 
     enabled: yes
-
-- include: configure_keystone.yml
-  when: not keystone_dockerized_deployment

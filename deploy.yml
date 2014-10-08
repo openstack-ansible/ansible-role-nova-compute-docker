@@ -2,5 +2,4 @@
 - hosts: all
   sudo: True
   roles:
-    - marklee77.mariadb
     - marklee77.keystone

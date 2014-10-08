@@ -1,19 +1,16 @@
 FROM ansible/ubuntu14.04-ansible:stable
 MAINTAINER Mark Stillwell <mark@stillwell.me>
 
-ENV DEBIAN_FRONTEND noninteractive
-
 COPY . /var/cache/docker/keystone
 WORKDIR /var/cache/docker/keystone
+
 RUN mkdir -p roles && ln -snf .. roles/marklee77.keystone
-RUN ansible-playbook -i inventories/local.ini deploy.yml \
-        -e '{ "mariadb_dockerize_context" : "install" }' && \
-    rm -rf private && \
-    service keystone stop
+RUN ansible-playbook -i inventories/local.ini deploy.yml -e '{ \
+      "keystone_dockerize_context" : "install" }'
 
-VOLUME ["/root", "/etc/keystone", "/var/run/keystone", "/usr/lib/keystone", \
-        "/var/log" ]
+VOLUME [ "/etc/keystone", "/var/lib/keystone", "/var/log/keystone" ]
 
-CMD [ "/usr/sbin/keystone" ]
+USER keystone
+CMD [ "/usr/bin/keystone-all" ]
 
-EXPOSE 35357
+EXPOSE 5000 35357

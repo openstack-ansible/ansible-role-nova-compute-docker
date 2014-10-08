@@ -1,11 +1,4 @@
 ---
-- name: restart keystone
-  service: 
-    name: keystone
-    state: restarted
-  when: not keystone_dockerized_deploy and
-        keystone_dockerize_context is not defined
-
 - name: perform keystone docker online configuration
   docker:
     image: "{{ keystone_docker_username }}/{{ keystone_docker_imagename }}"
@@ -15,9 +8,9 @@
     command: >
               ansible-playbook -i inventories/local.ini deploy.yml -e '{
                 "keystone_dockerize_context" : "online_configuration",
-                "keystone_mysql_root_password" : 
-                  "{{ keystone_mysql_root_password }}",
-                "keystone_mysql_keystone_password" : 
-                  "{{ keystone_mysql_keystone_password }}" }'
+                "keystone_endpoint_host" :
+                  "{{ ansible_docker0['ipv4']['address'] }}",
+                "keystone_admin_token" : "{{ keystone_admin_token }}",
+                "keystone_keystone_admin_password" : 
+                  "{{ keystone_keystone_admin_password }}" }'
     state: present
-
