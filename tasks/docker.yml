@@ -30,22 +30,27 @@
               ansible-playbook -i inventories/local.ini deploy.yml -e '{ 
                 "keystone_dockerize_context" : "offline_configuration", 
                 "keystone_admin_token" : "{{ keystone_admin_token }}",
-                "keystone_keystone_mysql_password" : 
-                  "{{ keystone_keystone_mysql_password }}",
+                "keystone_mysql_host" : "{{ keystone_mysql_host }}",
+                "keystone_mysql_root_password" : 
+                  "{{ keystone_mysql_root_password }}",
+                "keystone_mysql_keystone_password" : 
+                  "{{ keystone_mysql_keystone_password }}"
                 }'
     detach: no
     state: present
 
 - name: need to pause between creation of data container and starting server
   pause:
-    seconds: 1
+    seconds: 10
 
 - name: ensure keystone service is running
   docker:
     image: "{{ keystone_docker_username }}/{{ keystone_docker_imagename }}"
     name: "{{ keystone_docker_containername }}_server"
     volumes_from: "{{ keystone_docker_containername }}_data"
-    ports: "{{ keystone_bind_address }}:{{ keystone_port }}:35357"
+    ports: 
+      - 5000:5000
+      - 35357:35357
     detach: yes
     state: running
   notify:
