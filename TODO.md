@@ -1,3 +1,0 @@
-- keystone token flush cron job
-- fetch openstack ansible modules
-- eventually, we're going to need a better way to pass in variables...

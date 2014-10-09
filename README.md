@@ -58,5 +58,8 @@ Known Issues
 Todo
 ----
 
+- delegate_to in order to allow for installing on hosts different from mariadb host...
 - consider making mapping of mariadb port to host interface optional
-
+- keystone token flush cron job
+- fetch openstack ansible modules
+- eventually, we're going to need a better way to pass in variables...

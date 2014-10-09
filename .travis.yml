@@ -37,23 +37,12 @@ script:
       && (echo 'Idempotence test: pass' && exit 0)
       || (echo 'Idempotence test: fail' && exit 1)
 
-    # Some MySQL debugging (show all the logs).
-    - "sudo ls -lah /var/log"
-    - "sudo cat /var/log/mysql/error.log"
+    # Run test
+    - ansible-playbook -i inventories/local.ini test.yml
 
-    # Check to make sure we can connect to MySQL.
+    # Verify test
     - >
-      sudo -i mysql -u root -e 'show databases;'
-      | grep -q 'performance_schema'
-      && (echo 'MariaDB running normally' && exit 0)
-      || (echo 'MariaDB not running' && exit 1)
-
-    # Run demo
-    - ansible-playbook -i inventories/local.ini demo.yml
-
-    # Verify demo
-    - >
-      ansible-playbook -i inventories/local.ini demo.yml
+      ansible-playbook -i inventories/local.ini test.yml
       | grep -q 'changed=0.*failed=0'
       && (echo 'Idempotence test: pass' && exit 0)
       || (echo 'Idempotence test: fail' && exit 1)
