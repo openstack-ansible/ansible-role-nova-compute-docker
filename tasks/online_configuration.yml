@@ -1,57 +1,28 @@
 ---
-- name: wait until keystone service is ready
+- name: wait until glance service is ready
   wait_for:
     delay: 1
-    host: "{{ keystone_endpoint_host }}"
-    port: 35357
+    host: "{{ glance_endpoint_host }}"
+    port: glance
     state: started
 
-- name: create admin tenant
+- name: add glance user to the service tenant with the admin role
   keystone_user:
-    endpoint: "{{ keystone_admin_url }}"
-    token: "{{ keystone_admin_token }}"
-    tenant: admin
-    tenant_description: "Admin Tenant"
-
-- name: create admin user
-  keystone_user:
-    endpoint: "{{ keystone_admin_url }}"
-    token: "{{ keystone_admin_token }}"
-    tenant: admin
-    user: admin
-    password: "{{ keystone_keystone_admin_password }}"
-
-- name: create admin role and associate it with admin user
-  keystone_user:
-    endpoint: "{{ keystone_admin_url }}"
-    token: "{{ keystone_admin_token }}"
-    tenant: admin
-    user: admin
+    endpoint: "{{ glance_keystone_admin_url }}"
+    token: "{{ glance_keystone_admin_token }}"
+    tenant: service
+    user: glance
     role: admin
 
-- name: associate _member_ role with the admin user
-  keystone_user:
-    endpoint: "{{ keystone_admin_url }}"
-    token: "{{ keystone_admin_token }}"
-    tenant: admin
-    user: admin
-    role: _member_
-
-- name: create service tenant
-  keystone_user:
-    endpoint: "{{ keystone_admin_url }}"
-    token: "{{ keystone_admin_token }}"
-    tenant: service
-    tenant_description: "Service Tenant"
-
-- name: add keystone endpoint information
+- name: add glance endpoint
   keystone_service:
-    endpoint: "{{ keystone_admin_url }}"
-    token: "{{ keystone_admin_token }}"
-    region: "{{ keystone_region }}"
-    name: keystone
-    type: identity
-    description: "Identity Service"
-    public_url: "{{ keystone_public_url }}"
-    internal_url: "{{ keystone_internal_url }}"
-    admin_url: "{{ keystone_admin_url }}"
+    endpoint: "{{ glance_keystone_admin_url }}"
+    token: "{{ glance_keystone_admin_token }}"
+    region: "{{ glance_keystone_region }}"
+    name: glance
+    type: image
+    description: "Image Service"
+    public_url: "{{ glance_public_url }}"
+    internal_url: "{{ glance_internal_url }}"
+    admin_url: "{{ glance_admin_url }}"
+

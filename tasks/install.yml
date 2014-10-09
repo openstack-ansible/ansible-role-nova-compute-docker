@@ -1,24 +1,25 @@
 ---
-- name: ensure keystone packages and dependencies are installed
+- name: ensure glance packages and dependencies are installed
   apt: 
     pkg: "{{ item }}"
     state: latest 
     update_cache: yes 
     cache_valid_time: 600
   with_items:
+    - python-glanceclient
     - python-mysqldb
-    - keystone
+    - glance
 
-- name: ensure keystone is started and enabled for direct deployments
+- name: ensure glance is started and enabled for direct deployments
   service: 
-    name: keystone
+    name: glance
     state: started 
     enabled: yes
-  when: not keystone_dockerized_deployment
+  when: not glance_dockerized_deployment
 
-- name: ensure keystone is properly shut down for dockerized deployments
+- name: ensure glance is properly shut down for dockerized deployments
   service:
-    name: keystone
+    name: glance
     state: stopped
     enabled: yes
  

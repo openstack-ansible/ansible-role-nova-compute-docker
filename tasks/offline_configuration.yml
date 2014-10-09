@@ -1,34 +1,32 @@
 ---
-- name: ensure keystone is properly configured
+- name: ensure glance is properly configured
   ini_file:
-    dest: /etc/keystone/keystone.conf
+    dest: /etc/glance/glance.conf
     section: "{{ item.section }}"
     option: "{{ item.option }}"
     value: "{{ item.value }}"
   with_items:
-    - { section: DEFAULT, 
-        option: admin_token, value: "{{ keystone_admin_token }}" }
-    - { section: DEFAULT, option: verbose, value: "{{ keystone_log_verbose }}" }
-    - { section: DEFAULT, option: debug, value: "{{ keystone_log_debug }}" }
-    - { section: DEFAULT, option: log_dir, value: "{{ keystone_log_dir }}" }
+    - { section: DEFAULT, option: verbose, value: "{{ glance_log_verbose }}" }
+    - { section: DEFAULT, option: debug, value: "{{ glance_log_debug }}" }
+    - { section: DEFAULT, option: log_dir, value: "{{ glance_log_dir }}" }
     - { section: database, option: connection,
-        value: "mysql://keystone:{{ keystone_mysql_keystone_password }}@{{ 
-                  keystone_mysql_host }}:{{ keystone_mysql_port }}/keystone" }
-  register: modify_keystone_ini
+        value: "mysql://glance:{{ glance_mysql_glance_password }}@{{ 
+                  glance_mysql_host }}:{{ glance_mysql_port }}/glance" }
+  register: modify_glance_ini
 
-- name: ensure keystone sqlite is deleted
+- name: ensure glance sqlite is deleted
   file:
-    dest: /var/lib/keystone/keystone.sqlite
+    dest: /var/lib/glance/glance.sqlite
     state: absent
 
 - name: ensure database is synced
-  command: /usr/bin/keystone-manage db_sync
-  when: keystone_dockerize_context is defined or
-        create_keystone_db|changed
+  command: /usr/bin/glance-manage db_sync glance
+  when: glance_dockerize_context is defined or
+        create_glance_db|changed
 
-- name: restart keystone
+- name: restart glance
   service:
-    name: keystone
+    name: glance
     state: restarted
-  when: modify_keystone_ini|changed and
-        keystone_dockerize_context is not defined
+  when: modify_glance_ini|changed and
+        glance_dockerize_context is not defined

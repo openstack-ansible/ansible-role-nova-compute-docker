@@ -1,15 +1,24 @@
 ---
-- name: ensure keystone database is present
+- name: ensure glance database is present
   mysql_db:
-    name: keystone
-  register: create_keystone_db
+    name: glance
+  register: create_glance_db
 
-- name: ensure keystone database user is present
+- name: ensure glance database user is present
   mysql_user:
-    name: keystone
+    name: glance
     host: "{{ item }}"
-    password: "{{ keystone_mysql_keystone_password }}"
-    priv: keystone.*:ALL
+    password: "{{ glance_mysql_glance_password }}"
+    priv: glance.*:ALL
   with_items:
     - localhost
     - "%"
+
+- name: create glance user in keystone
+  keystone_user:
+    endpoint: "{{ keystone_admin_url }}"
+    token: "{{ keystone_admin_token }}"
+    tenant: service
+    user: glance
+    password: "{{ glance_identity_password }}"
+

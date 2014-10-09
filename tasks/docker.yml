@@ -12,65 +12,61 @@
 - name: synchronize role to remote cache for Dockerfile build
   synchronize:
     src: ../
-    dest: "{{ ansible_env.PWD }}/.ansible_cache/docker/keystone"
+    dest: "{{ ansible_env.PWD }}/.ansible_cache/docker/glance"
     links: yes
     delete: yes
 
-- name: ensure keystone docker image has been built
+- name: ensure glance docker image has been built
   docker_image:
-    name: "{{ keystone_docker_username }}/keystone"
-    path: "{{ ansible_env.PWD }}/.ansible_cache/docker/keystone"
+    name: "{{ glance_docker_username }}/glance"
+    path: "{{ ansible_env.PWD }}/.ansible_cache/docker/glance"
     state: present
 
-- name: ensure keystone data container exists
+- name: ensure glance data container exists
   docker:
-    image: "{{ keystone_docker_username }}/{{ keystone_docker_imagename }}"
-    name: "{{ keystone_docker_containername }}_data"
+    image: "{{ glance_docker_username }}/{{ glance_docker_imagename }}"
+    name: "{{ glance_docker_containername }}_data"
     command: >
       ansible-playbook -i inventories/local.ini deploy.yml -e '{ 
-        "keystone_dockerize_context" : "offline_configuration", 
-        "keystone_admin_token" : "{{ keystone_admin_token }}",
-        "keystone_mysql_host" : "{{ keystone_mysql_host }}",
-        "keystone_mysql_root_password" : "{{ keystone_mysql_root_password }}",
-        "keystone_mysql_keystone_password" : 
-          "{{ keystone_mysql_keystone_password }}" }'
+        "glance_dockerize_context" : "offline_configuration", 
+        "glance_mysql_host" : "{{ glance_mysql_host }}",
+        "glance_mysql_glance_password" : 
+          "{{ glance_mysql_glance_password }}" }'
     detach: no
     state: present
 
 - name: wait until offline configuration is completed
-  command: docker wait "{{ keystone_docker_containername }}_data"
+  command: docker wait "{{ glance_docker_containername }}_data"
   register: docker_wait
   changed_when: false
   failed_when: docker_wait.stdout != "0"
 
-- name: ensure keystone service is running
+- name: ensure glance service is running
   docker:
-    image: "{{ keystone_docker_username }}/{{ keystone_docker_imagename }}"
-    name: "{{ keystone_docker_containername }}_server"
-    volumes_from: "{{ keystone_docker_containername }}_data"
+    image: "{{ glance_docker_username }}/{{ glance_docker_imagename }}"
+    name: "{{ glance_docker_containername }}_server"
+    volumes_from: "{{ glance_docker_containername }}_data"
     ports: 
       - 5000:5000
       - 35357:35357
     detach: yes
     state: running
 
-- name: perform keystone docker online configuration
+- name: perform glance docker online configuration
   docker:
-    image: "{{ keystone_docker_username }}/{{ keystone_docker_imagename }}"
-    name: "{{ keystone_docker_containername }}_configure"
-    volumes_from: "{{ keystone_docker_containername }}_data"
+    image: "{{ glance_docker_username }}/{{ glance_docker_imagename }}"
+    name: "{{ glance_docker_containername }}_configure"
+    volumes_from: "{{ glance_docker_containername }}_data"
     detach: no
     command: >
       ansible-playbook -i inventories/local.ini deploy.yml -e '{
-        "keystone_dockerize_context" : "online_configuration",
-        "keystone_endpoint_host" : "{{ ansible_docker0['ipv4']['address'] }}",
-        "keystone_admin_token" : "{{ keystone_admin_token }}", 
-        "keystone_keystone_admin_password" :
-          "{{ keystone_keystone_admin_password }}" }'
+        "glance_dockerize_context" : "online_configuration",
+        "glance_keystone_admin_password" :
+          "{{ glance_keystone_admin_password }}" }'
     state: present
 
 - name: wait until online configuration is completed
-  command: docker wait "{{ keystone_docker_containername }}_configure"
+  command: docker wait "{{ glance_docker_containername }}_configure"
   register: docker_wait
   changed_when: false
   failed_when: docker_wait.stdout != "0"

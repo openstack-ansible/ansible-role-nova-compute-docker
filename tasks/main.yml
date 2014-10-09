@@ -1,21 +1,21 @@
 ---
 - include: prep.yml
-  when: keystone_dockerize_context is not defined
+  when: glance_dockerize_context is not defined
 
 - include: docker.yml
-  when: keystone_dockerized_deployment
+  when: glance_dockerized_deployment
 
 - include: install.yml
-  when: not keystone_dockerized_deployment and (
-        keystone_dockerize_context is not defined or
-        keystone_dockerize_context == "install" )
+  when: not glance_dockerized_deployment and (
+        glance_dockerize_context is not defined or
+        glance_dockerize_context == "install" )
 
 - include: offline_configuration.yml
-  when: not keystone_dockerized_deployment and (
-        keystone_dockerize_context is not defined or
-        keystone_dockerize_context == "offline_configuration" )
+  when: not glance_dockerized_deployment and (
+        glance_dockerize_context is not defined or
+        glance_dockerize_context == "offline_configuration" )
 
 - include: online_configuration.yml
-  when: not keystone_dockerized_deployment and (
-        keystone_dockerize_context is not defined or
-        keystone_dockerize_context == "online_configuration" )
+  when: not glance_dockerized_deployment and (
+        glance_dockerize_context is not defined or
+        glance_dockerize_context == "online_configuration" )
