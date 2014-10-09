@@ -3,6 +3,13 @@
   sudo: True
   tasks:
 
+    - name: ensure packages required for testing are installed
+      apt:
+        pkg: python-keystoneclient
+        state: latest
+        update_cache: yes
+        cache_valid_time: 600
+
     - name: create demo tenant
       keystone_user:
         endpoint: "{{ keystone_admin_url }}"

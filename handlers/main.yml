@@ -6,8 +6,8 @@
     volumes_from: "{{ keystone_docker_containername }}_data"
     detach: no
     command: >
-              ansible-playbook -i inventories/local.ini deploy.yml -e '{
-                "keystone_dockerize_context" : "online_configuration",
+      ansible-playbook -i inventories/local.ini deploy.yml -e '{
+        "keystone_dockerize_context" : "online_configuration",
                 "keystone_endpoint_host" :
                   "{{ ansible_docker0['ipv4']['address'] }}",
                 "keystone_admin_token" : "{{ keystone_admin_token }}",

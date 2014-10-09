@@ -1,4 +1,11 @@
 ---
+- name: wait until keystone service is ready
+  wait_for:
+    delay: 1
+    host: "{{ keystone_endpoint_host }}"
+    port: 35357
+    state: started
+
 - name: create admin tenant
   keystone_user:
     endpoint: "{{ keystone_admin_url }}"

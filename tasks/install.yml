@@ -9,8 +9,9 @@
     - python-mysqldb
     - keystone
 
-- name: ensure keystone is started and enabled
+- name: ensure keystone is started and enabled for direct deployments
   service: 
     name: keystone
     state: started 
     enabled: yes
+  when: not keystone_dockerized_deployment
