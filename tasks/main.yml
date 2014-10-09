@@ -1,5 +1,6 @@
 ---
 - include: prep.yml
+  when: keystone_dockerize_context is not defined
 
 - include: docker.yml
   when: keystone_dockerized_deployment

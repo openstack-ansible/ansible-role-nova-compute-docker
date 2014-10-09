@@ -4,18 +4,17 @@
   sudo: True
   roles:
     - marklee77.docker
-    - { role: marklee77.mariadb, mariadb_bind_address: ansible_docker0['ipv4']['address']  }
+    - { role: marklee77.mariadb, mariadb_bind_address: 0.0.0.0 }
 
 - hosts: all
-  gather_facts: False
+  gather_facts: True
   sudo: True
   tasks:
 
-    - name: ensure remote root access is allowed by mysql for dockerized install
-      mysql_user:
-        name: root
-        host: "{{ ansible_docker0['ipv4']['address'] }}"
-        password: "{{ keystone_mysql_root_password }}"
-        priv: "*.*:ALL,GRANT"
-        state: present
+    - name: ensure required packages for prep are installed
+      apt:
+        pkg: python-mysqldb
+        state: latest
+        update_cache: yes
+        cache_valid_time: 600
 
