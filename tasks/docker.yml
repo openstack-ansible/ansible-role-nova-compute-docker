@@ -74,3 +74,4 @@
   register: docker_wait
   changed_when: false
   failed_when: docker_wait.stdout != "0"
+

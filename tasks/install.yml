@@ -15,3 +15,10 @@
     state: started 
     enabled: yes
   when: not keystone_dockerized_deployment
+
+- name: ensure keystone is properly shut down for dockerized deployments
+  service:
+    name: keystone
+    state: stopped
+    enabled: yes
+ 
