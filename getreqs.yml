@@ -12,9 +12,12 @@
 
     - name: check out roles needed for demo deployment from github.com
       git:
-        repo: 'https://github.com/marklee77/ansible-role-mariadb.git'
-        dest: roles/marklee77.mariadb
+        repo: 'https://github.com/marklee77/ansible-role-{{ item }}.git'
+        dest: roles/marklee77.{{ item }}
         update: yes
+      with_items:
+        - mariadb
+        - keystone
 
     - name: check out library needed for demo deployment from github.com
       git:

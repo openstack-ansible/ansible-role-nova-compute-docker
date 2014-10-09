@@ -5,30 +5,7 @@
 
     - name: ensure packages required for testing are installed
       apt:
-        pkg: python-keystoneclient
+        pkg: python-glanceclient
         state: latest
         update_cache: yes
         cache_valid_time: 600
-
-    - name: create demo tenant
-      keystone_user:
-        endpoint: "{{ keystone_admin_url }}"
-        token: "{{ keystone_admin_token }}"
-        tenant: demo
-        tenant_description: "Demo Tenant"
-
-    - name: create demo user
-      keystone_user:
-        endpoint: "{{ keystone_admin_url }}"
-        token: "{{ keystone_admin_token }}"
-        tenant: demo
-        user: demo
-        password: "{{ keystone_keystone_demo_password }}"
-
-    - name: associate _member_ role with demo user
-      keystone_user:
-        endpoint: "{{ keystone_admin_url }}"
-        token: "{{ keystone_admin_token }}"
-        tenant: demo
-        user: demo
-        role: _member_

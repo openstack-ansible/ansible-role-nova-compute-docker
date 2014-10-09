@@ -1,9 +1,9 @@
-marklee77.mariadb
+marklee77.glance
 =================
 
-[![Build Status](https://travis-ci.org/marklee77/ansible-role-mariadb.svg?branch=master)](https://travis-ci.org/marklee77/ansible-role-mariadb)
+[![Build Status](https://travis-ci.org/marklee77/ansible-role-glance.svg?branch=master)](https://travis-ci.org/marklee77/ansible-role-glance)
 
-The purpose of this role is to deploy MariaDB onto Ubuntu. There is also an
+The purpose of this role is to deploy glance onto Ubuntu. There is also an
 support for an experimental "dockerized" deployment. This dockerized deployment
 copies the role to the target machine and uses the original ansible-based
 functionality to build a docker image, and then uses recent ansible features to
@@ -17,19 +17,19 @@ not (easily) run on travis.
 Role Variables
 --------------
 
-- mariadb_repository_mirror: http://mirrors.coreix.net/mariadb by default.
-- mariadb_version: 10.0
-- mariadb_mysql_root_password: random value
-- mariadb_enable_remote: false
-- mariadb_set_root_password: true
+- glance_repository_mirror: http://mirrors.coreix.net/glance by default.
+- glance_version: 10.0
+- glance_mysql_root_password: random value
+- glance_enable_remote: false
+- glance_set_root_password: true
 
 The variables below only affect the dockerized deployment:
 
-- mariadb_dockerized_deployment: false
-- mariadb_docker_username: default
-- mariadb_docker_imagename: mariadb
-- mariadb_docker_containername: mariadb
-- mariadb_port: 3306
+- glance_dockerized_deployment: false
+- glance_docker_username: default
+- glance_docker_imagename: glance
+- glance_docker_containername: glance
+- glance_port: 3306
 
 Example Playbook
 -------------------------
@@ -37,7 +37,7 @@ Example Playbook
     - hosts: all
       sudo: True
       roles:
-        - marklee77.mariadb
+        - marklee77.glance
 
 License
 -------
@@ -58,8 +58,6 @@ Known Issues
 Todo
 ----
 
-- delegate_to in order to allow for installing on hosts different from mariadb host...
-- consider making mapping of mariadb port to host interface optional
-- keystone token flush cron job
-- fetch openstack ansible modules
+- delegate_to in order to allow for installing on hosts different from glance host...
+- consider making mapping of glance port to host interface optional
 - eventually, we're going to need a better way to pass in variables...

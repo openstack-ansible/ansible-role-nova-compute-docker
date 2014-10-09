@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: Mark Stillwell
-  description: OpenStack Keystone for Ubuntu
+  description: OpenStack Glance for Ubuntu
   license: GPLv2
   min_ansible_version: 1.2
   platforms:

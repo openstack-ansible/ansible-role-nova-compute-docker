@@ -1,28 +1,33 @@
 ---
-keystone_run_dir: "{{ lookup('env', 'PWD') }}"
-keystone_mysql_root_password: "{{ lookup('password', keystone_run_dir + '/private/credentials/mysql-root-password length=20 chars=ascii_letters,digits') }}"
-keystone_mysql_keystone_password: "{{ lookup('password', keystone_run_dir + '/private/credentials/mysql-keystone-password length=20 chars=ascii_letters,digits') }}"
-keystone_admin_token: "{{ lookup('password', keystone_run_dir + '/private/credentials/keystone-admin-token length=20 chars=ascii_letters,digits') }}"
-keystone_keystone_admin_password: "{{ lookup('password', keystone_run_dir + '/private/credentials/keystone-admin-password length=20 chars=ascii_letters,digits') }}"
+glance_run_dir: "{{ lookup('env', 'PWD') }}"
+glance_mysql_root_password: "{{ lookup('password', glance_run_dir + '/private/credentials/mysql-root-password length=20 chars=ascii_letters,digits') }}"
+glance_mysql_glance_password: "{{ lookup('password', glance_run_dir + '/private/credentials/mysql-glance-password length=20 chars=ascii_letters,digits') }}"
+glance_keystone_admin_token: "{{ lookup('password', glance_run_dir + '/private/credentials/keystone-admin-token length=20 chars=ascii_letters,digits') }}"
+glance_keystone_admin_password: "{{ lookup('password', glance_run_dir + '/private/credentials/keystone-admin-password length=20 chars=ascii_letters,digits') }}"
 
-keystone_mysql_host: 127.0.0.1
-keystone_mysql_port: 3306
+glance_mysql_host: 127.0.0.1
+glance_mysql_port: 3306
 
-keystone_log_dir: /var/log/keystone
-keystone_log_verbose: False
-keystone_log_debug: False
+glance_log_dir: /var/log/glance
+glance_log_verbose: False
+glance_log_debug: False
 
 # need a better scheme here...
-keystone_endpoint_host: 127.0.0.1
-keystone_admin_url: http://{{ keystone_endpoint_host }}:35357/v2.0
-keystone_internal_url: http://{{ keystone_endpoint_host }}:5000/v2.0
-keystone_public_url: http://{{ keystone_endpoint_host }}:5000/v2.0
+glance_keystone_endpoint_host: 127.0.0.1
+glance_keystone_admin_url: http://{{ keystone_endpoint_host }}:35357/v2.0
+glance_keystone_internal_url: http://{{ keystone_endpoint_host }}:5000/v2.0
+glance_keystone_public_url: http://{{ keystone_endpoint_host }}:5000/v2.0
 
-keystone_region: RegionOne
-keystone_keystone_demo_password: password
+glance_endpoint_host: 127.0.0.1
+glance_admin_url: http://{{ keystone_endpoint_host }}:9292
+glance_internal_url: http://{{ keystone_endpoint_host }}:9292
+glance_public_url: http://{{ keystone_endpoint_host }}:9292
+
+glance_keystone_region: RegionOne
+glance_keystone_demo_password: password
 
 # The variables below only apply to dockerized deployment
-keystone_dockerized_deployment: false
-keystone_docker_username: default
-keystone_docker_imagename: keystone
-keystone_docker_containername: keystone
+glance_dockerized_deployment: false
+glance_docker_username: default
+glance_docker_imagename: glance
+glance_docker_containername: glance
