@@ -21,30 +21,10 @@
     dest: /var/lib/keystone/keystone.sqlite
     state: absent
 
-#- name: ensure keystone database is present
-#  mysql_db:
-#    login_host: "{{ keystone_mysql_host }}"
-#    login_user: root
-#    login_password: "{{ keystone_mysql_root_password }}"
-#    name: keystone
-#  register: create_keystone_db
-
-#- name: ensure keystone database user is present
-#  mysql_user:
-#    login_host: "{{ keystone_mysql_host }}"
-#    login_user: root
-#    login_password: "{{ keystone_mysql_root_password }}"
-#    name: keystone
-#    host: "{{ item }}"
-#    password: "{{ keystone_mysql_keystone_password }}"
-#    priv: keystone.*:ALL
-#  with_items:
-#    - localhost
-#    - "%"
-
 - name: ensure database is synced
   command: /usr/bin/keystone-manage db_sync
-  when: create_keystone_db|changed
+  when: create_keystone_db is not defined or
+        create_keystone_db|changed
 
 - name: restart keystone
   service:

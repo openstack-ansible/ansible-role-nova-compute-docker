@@ -33,8 +33,7 @@
         "keystone_mysql_host" : "{{ keystone_mysql_host }}",
         "keystone_mysql_root_password" : "{{ keystone_mysql_root_password }}",
         "keystone_mysql_keystone_password" : 
-          "{{ keystone_mysql_keystone_password }}",
-        "create_keystone_db" : "{{ create_keystone_db }}" }'
+          "{{ keystone_mysql_keystone_password }}" }'
     detach: no
     state: present
 
