@@ -1,10 +1,10 @@
 ---
 - name: ensure glance is properly configured
   ini_file:
-    dest: /etc/glance/glance-{{ item }}.conf
-    section: "{{ item.section }}"
-    option: "{{ item.option }}"
-    value: "{{ item.value }}"
+    dest: /etc/glance/glance-{{ item[0] }}.conf
+    section: "{{ item[1].section }}"
+    option: "{{ item[1].option }}"
+    value: "{{ item[1].value }}"
   with_nested:
     - [ 'api', 'registry' ]
     - 
@@ -14,6 +14,8 @@
       - { section: database, option: connection,
           value: "mysql://glance:{{ glance_mysql_glance_password }}@{{ 
                     glance_mysql_host }}:{{ glance_mysql_port }}/glance" }
+      - { section: database, option: db_enforce_mysql_charset,
+          value: False }
       - { section: keystone_authtoken, option: auth_uri, 
           value: "{{ glance_identity_internal_url }}" }
       - { section: keystone_authtoken, option: auth_host, 
@@ -33,7 +35,20 @@
     dest: /var/lib/glance/glance.sqlite
     state: absent
 
-- name: ensure database is synced
+- name: ensure database is synced, part 1
+  command: /usr/bin/glance-manage db_sync
+  when: glance_dockerize_context is defined or
+        create_glance_db|changed
+
+- name: workaround supposedly fixed utf8 problem
+  command: >
+    /usr/bin/mysql -u glance --password="{{ glance_mysql_glance_password }}" 
+    glance -e 
+    "alter table migrate_version convert to character set utf9 collate utf8_unicode_ci; flush privileges;"
+  when: glance_dockerize_context is defined or
+        create_glance_db|changed
+
+- name: ensure database is synced, part 1
   command: /usr/bin/glance-manage db_sync
   when: glance_dockerize_context is defined or
         create_glance_db|changed

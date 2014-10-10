@@ -14,4 +14,4 @@ VOLUME [ "/etc/glance", "/var/lib/glance", "/var/log/glance" ]
 
 CMD sudo -u glance /bin/sh -c "/usr/bin/glance-registry & /usr/bin/glance-api"
 
-EXPOSE 9292
+EXPOSE 9191 9292
