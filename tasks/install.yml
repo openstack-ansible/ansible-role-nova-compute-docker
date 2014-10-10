@@ -10,16 +10,15 @@
     - python-mysqldb
     - glance
 
-- name: ensure glance is started and enabled for direct deployments
+- name: ensure glance is started and enabled
   service: 
     name: glance
     state: started 
     enabled: yes
-  when: not glance_dockerized_deployment
 
 - name: ensure glance is properly shut down for dockerized deployments
   service:
     name: glance
     state: stopped
     enabled: yes
- 
+  when: glance_dockerize_context is defined

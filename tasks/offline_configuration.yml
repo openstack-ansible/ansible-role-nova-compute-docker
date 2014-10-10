@@ -20,7 +20,7 @@
     state: absent
 
 - name: ensure database is synced
-  command: /usr/bin/glance-manage db_sync glance
+  command: /usr/bin/glance-manage db_sync 
   when: glance_dockerize_context is defined or
         create_glance_db|changed
 
