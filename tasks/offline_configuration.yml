@@ -26,7 +26,10 @@
 
 - name: restart glance
   service:
-    name: glance
+    name: "{{ item }}"
     state: restarted
+  with_items:
+    - glance-registry
+    - glance-api
   when: modify_glance_ini|changed and
         glance_dockerize_context is not defined

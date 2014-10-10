@@ -15,9 +15,9 @@ glance_identity_admin_token: >
                         '/private/credentials/keystone-admin-token 
                          length=20 
                          chars=ascii_letters,digits') }}
-glance_identity_admin_password: >
+glance_identity_glance_password: >
   {{ lookup('password', glance_run_dir + 
-                        '/private/credentials/keystone-admin-password 
+                        '/private/credentials/keystone-glance-password 
                          length=20 
                          chars=ascii_letters,digits') }}
 
@@ -29,14 +29,14 @@ glance_log_verbose: False
 glance_log_debug: False
 
 glance_identity_endpoint_host: 127.0.0.1
-glance_identity_admin_url: http://{{ keystone_endpoint_host }}:35357/v2.0
-glance_identity_internal_url: http://{{ keystone_endpoint_host }}:5000/v2.0
-glance_identity_public_url: http://{{ keystone_endpoint_host }}:5000/v2.0
+glance_identity_admin_url: http://{{ glance_identity_endpoint_host }}:35357/v2.0
+glance_identity_internal_url: http://{{ glance_identity_endpoint_host }}:5000/v2.0
+glance_identity_public_url: http://{{ glance_identity_endpoint_host }}:5000/v2.0
 
 glance_image_endpoint_host: 127.0.0.1
-glance_image_admin_url: http://{{ keystone_endpoint_host }}:9292
-glance_image_internal_url: http://{{ keystone_endpoint_host }}:9292
-glance_image_public_url: http://{{ keystone_endpoint_host }}:9292
+glance_image_admin_url: http://{{ glance_image_endpoint_host }}:9292
+glance_image_internal_url: http://{{ glance_image_endpoint_host }}:9292
+glance_image_public_url: http://{{ glance_image_endpoint_host }}:9292
 
 glance_identity_region: RegionOne
 glance_identity_demo_password: password

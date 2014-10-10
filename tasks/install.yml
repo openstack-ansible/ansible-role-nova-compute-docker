@@ -12,13 +12,19 @@
 
 - name: ensure glance is started and enabled
   service: 
-    name: glance
+    name: "{{ item }}"
     state: started 
     enabled: yes
+  with_items:
+    - glance-registry
+    - glance-api
 
 - name: ensure glance is properly shut down for dockerized deployments
   service:
-    name: glance
+    name: "{{ item }}"
     state: stopped
     enabled: yes
+  with_items:
+    - glance-registry
+    - glance-api
   when: glance_dockerize_context is defined

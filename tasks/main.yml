@@ -16,11 +16,11 @@
 
 - name: create glance user in keystone
   keystone_user:
-    endpoint: "{{ glance_keystone_admin_url }}"
-    token: "{{ glance_keystone_admin_token }}"
+    endpoint: "{{ glance_identity_admin_url }}"
+    token: "{{ glance_identity_admin_token }}"
     tenant: service
     user: glance
-    password: "{{ glance_keystone_glance_password }}"
+    password: "{{ glance_identity_glance_password }}"
 - include: docker.yml
   when: glance_dockerized_deployment
 
