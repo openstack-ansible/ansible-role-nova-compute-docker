@@ -12,6 +12,6 @@ RUN ansible-playbook -i inventories/local.ini playbooks/install.yml
 
 VOLUME [ "/etc/glance", "/var/lib/glance", "/var/log/glance" ]
 
-CMD [ "sudo", "-u", "keystone", "/usr/bin/keystone-all" ]
+CMD sudo -u glance /bin/sh -c "/usr/bin/glance-registry & /usr/bin/glance-api"
 
-EXPOSE 5000 35357
+EXPOSE 9292
