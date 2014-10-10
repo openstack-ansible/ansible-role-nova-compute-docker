@@ -32,9 +32,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.provision "ansible" do |ansible|
     ansible.playbook = "deploy.yml"
-    #ansible.extra_vars = {
-    #  glance_dockerized_deployment: true,
-    #}
+    ansible.extra_vars = {
+      glance_dockerized_deployment: true
+    }
   end
 
   config.vm.provision "ansible" do |ansible|

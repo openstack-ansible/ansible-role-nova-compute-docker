@@ -42,7 +42,7 @@
     name: "{{ glance_docker_containername }}_data"
     command: >
       ansible-playbook 
-        -i inventories/local.ini playbooks/offline_configuration -e '{ 
+        -i inventories/local.ini playbooks/offline_configuration.yml -e '{ 
           "glance_log_dir" : "{{ glance_log_dir }}",
           "glance_log_verbose" : "{{ glance_log_verbose }}",
           "glance_log_debug" : "{{ glance_log_debug }}",

@@ -43,9 +43,9 @@
 
 - name: workaround supposedly fixed utf8 problem
   command: >
-    /usr/bin/mysql -u glance --password="{{ glance_mysql_glance_password }}" 
-    glance -e 
-    "alter table migrate_version convert to character set utf8 collate utf8_unicode_ci;"
+    /usr/bin/mysql -h {{ glance_mysql_host }} -P {{ glance_mysql_port }} 
+      -u glance --password="{{ glance_mysql_glance_password }}" glance -e 
+      "alter table migrate_version convert to character set utf8 collate utf8_unicode_ci;"
   when: glance_dockerize_context is defined or
         create_glance_db|changed
 
