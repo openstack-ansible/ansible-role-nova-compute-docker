@@ -1,17 +1,31 @@
 ---
 - name: ensure glance is properly configured
   ini_file:
-    dest: /etc/glance/glance.conf
+    dest: /etc/glance/glance-{{ item }}.conf
     section: "{{ item.section }}"
     option: "{{ item.option }}"
     value: "{{ item.value }}"
-  with_items:
-    - { section: DEFAULT, option: verbose, value: "{{ glance_log_verbose }}" }
-    - { section: DEFAULT, option: debug, value: "{{ glance_log_debug }}" }
-    - { section: DEFAULT, option: log_dir, value: "{{ glance_log_dir }}" }
-    - { section: database, option: connection,
-        value: "mysql://glance:{{ glance_mysql_glance_password }}@{{ 
-                  glance_mysql_host }}:{{ glance_mysql_port }}/glance" }
+  with_nested:
+    - [ 'api', 'registry' ]
+    - 
+      - { section: DEFAULT, option: verbose, value: "{{ glance_log_verbose }}" }
+      - { section: DEFAULT, option: debug, value: "{{ glance_log_debug }}" }
+      - { section: DEFAULT, option: log_dir, value: "{{ glance_log_dir }}" }
+      - { section: database, option: connection,
+          value: "mysql://glance:{{ glance_mysql_glance_password }}@{{ 
+                    glance_mysql_host }}:{{ glance_mysql_port }}/glance" }
+      - { section: keystone_authtoken, option: auth_uri, 
+          value: "{{ glance_identity_internal_url }}" }
+      - { section: keystone_authtoken, option: auth_host, 
+          value: "{{ glance_identity_endpoint_host }}" }
+      - { section: keystone_authtoken, option: auth_port, value: 35357 }
+      - { section: keystone_authtoken, option: auth_protocol, value: http }
+      - { section: keystone_authtoken, option: admin_tenant_name, 
+          value: service }
+      - { section: keystone_authtoken, option: admin_user, value: glance }
+      - { section: keystone_authtoken, option: admin_password, 
+          value: "{{ glance_identity_glance_password }}" }
+      - { section: paste_deploy, option: flavor, value: keystone }
   register: modify_glance_ini
 
 - name: ensure glance sqlite is deleted
@@ -20,7 +34,7 @@
     state: absent
 
 - name: ensure database is synced
-  command: /usr/bin/glance-manage db_sync 
+  command: /usr/bin/glance-manage db_sync
   when: glance_dockerize_context is defined or
         create_glance_db|changed
 

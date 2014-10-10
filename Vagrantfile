@@ -34,12 +34,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     ansible.playbook = "deploy.yml"
     #ansible.extra_vars = {
     #  glance_dockerized_deployment: true,
-    #  glance_mysql_host: "{{ ansible_docker0['ipv4']['address'] }}"
     #}
   end
 
-  #config.vm.provision "ansible" do |ansible|
-  #  ansible.playbook = "test.yml"
-  #end
+  config.vm.provision "ansible" do |ansible|
+    ansible.playbook = "test.yml"
+  end
 
 end

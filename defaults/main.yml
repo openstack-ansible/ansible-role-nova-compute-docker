@@ -15,6 +15,11 @@ glance_identity_admin_token: >
                         '/private/credentials/keystone-admin-token 
                          length=20 
                          chars=ascii_letters,digits') }}
+glance_identity_admin_password: >
+  {{ lookup('password', glance_run_dir + 
+                        '/private/credentials/keystone-admin-password 
+                         length=20 
+                         chars=ascii_letters,digits') }}
 glance_identity_glance_password: >
   {{ lookup('password', glance_run_dir + 
                         '/private/credentials/keystone-glance-password 
