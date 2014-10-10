@@ -25,6 +25,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.provision "ansible" do |ansible|
     ansible.playbook = "prep.yml"
+    ansible.extra_vars = {
+      mariadb_bind_address: "0.0.0.0",
+    }
   end
 
   config.vm.provision "ansible" do |ansible|

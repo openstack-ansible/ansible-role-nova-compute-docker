@@ -16,9 +16,8 @@
 
 - name: create glance user in keystone
   keystone_user:
-    endpoint: "{{ keystone_admin_url }}"
-    token: "{{ keystone_admin_token }}"
+    endpoint: "{{ glance_keystone_admin_url }}"
+    token: "{{ glance_keystone_admin_token }}"
     tenant: service
     user: glance
-    password: "{{ glance_identity_password }}"
-
+    password: "{{ glance_keystone_glance_password }}"

@@ -1,21 +1,60 @@
 ---
-- include: prep.yml
-  when: glance_dockerize_context is not defined
+- name: ensure glance database is present
+  mysql_db:
+    name: glance
+  register: create_glance_db
 
+- name: ensure glance database user is present
+  mysql_user:
+    name: glance
+    host: "{{ item }}"
+    password: "{{ glance_mysql_glance_password }}"
+    priv: glance.*:ALL
+  with_items:
+    - localhost
+    - "%"
+
+- name: create glance user in keystone
+  keystone_user:
+    endpoint: "{{ glance_keystone_admin_url }}"
+    token: "{{ glance_keystone_admin_token }}"
+    tenant: service
+    user: glance
+    password: "{{ glance_keystone_glance_password }}"
 - include: docker.yml
   when: glance_dockerized_deployment
 
 - include: install.yml
-  when: not glance_dockerized_deployment and (
-        glance_dockerize_context is not defined or
-        glance_dockerize_context == "install" )
+  when: not glance_dockerized_deployment 
 
 - include: offline_configuration.yml
-  when: not glance_dockerized_deployment and (
-        glance_dockerize_context is not defined or
-        glance_dockerize_context == "offline_configuration" )
+  when: not glance_dockerized_deployment 
 
-- include: online_configuration.yml
-  when: not glance_dockerized_deployment and (
-        glance_dockerize_context is not defined or
-        glance_dockerize_context == "online_configuration" )
+- name: wait until glance service is ready
+  wait_for:
+    delay: 1
+    host: "{{ glance_image_endpoint_host }}"
+    port: 9292
+    state: started
+
+- name: add glance user to the service tenant with the admin role
+  keystone_user:
+    endpoint: "{{ glance_identity_admin_url }}"
+    token: "{{ glance_identity_admin_token }}"
+    tenant: service
+    user: glance
+    role: admin
+
+- name: add glance endpoint
+  keystone_service:
+    endpoint: "{{ glance_identity_admin_url }}"
+    token: "{{ glance_identity_admin_token }}"
+    region: "{{ glance_identity_region }}"
+    name: glance
+    type: image
+    description: "Image Service"
+    public_url: "{{ glance_image_public_url }}"
+    internal_url: "{{ glance_image_internal_url }}"
+    admin_url: "{{ glance_image_admin_url }}"
+
+

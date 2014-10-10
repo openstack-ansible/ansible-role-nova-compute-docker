@@ -1,3 +1,15 @@
+AUTHORS
+LICENSE
+Vagrantfile
+*.md
+.dockerignore
 .git
+.gitignore
+.vagrant
+getreqs.yml
+prep.yml
+test.yml
+group_vars
 private
 roles
+templates

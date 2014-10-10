@@ -1,7 +1,4 @@
-- /AUTHORS
-- /LICENSE
 - /Vagrantfile
-- /*.md
 - /.dockerignore
 - /.git
 - /.gitignore
@@ -10,5 +7,5 @@
 - /*.yml
 - /group_vars
 - /private
-+ /roles/marklee77.keystone
-- /roles/*
+- /roles
+- /templates
