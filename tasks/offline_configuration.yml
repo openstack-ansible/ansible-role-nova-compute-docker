@@ -36,6 +36,7 @@
     state: absent
 
 - name: ensure glance database has been populated with required tables
+  sudo_user: glance
   command: /usr/bin/glance-manage db_sync
   when: glance_dockerize_context is defined or
         create_glance_db|changed
@@ -50,6 +51,7 @@
     mode: 0700 
 
 - name: run glance database workaround script
+  sudo_user: glance
   command: /var/lib/glance/glance-mysql-utf8-workaround.sh
   when: glance_dockerize_context is defined or
         create_glance_db|changed
