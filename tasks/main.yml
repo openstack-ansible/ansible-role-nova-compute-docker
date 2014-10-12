@@ -1,11 +1,19 @@
 ---
 - name: ensure glance database is present
   mysql_db:
+    login_host: "{{ glance_mysql_host }}"
+    login_port: "{{ glance_mysql_port }}"
+    login_user: root
+    login_password: "{{ glance_mysql_root_password }}"
     name: glance
   register: create_glance_db
 
 - name: ensure glance database user is present
   mysql_user:
+    login_host: "{{ glance_mysql_host }}"
+    login_port: "{{ glance_mysql_port }}"
+    login_user: root
+    login_password: "{{ glance_mysql_root_password }}"
     name: glance
     host: "{{ item }}"
     password: "{{ glance_mysql_glance_password }}"
