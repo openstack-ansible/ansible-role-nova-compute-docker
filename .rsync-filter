@@ -8,5 +8,5 @@
 - /group_vars
 - /private
 - /roles
-+ /templates/etc/supervisor/conf.d/supervisord.conf
-- /templates
+- /templates/admin.openrc
+- /templates/ansible_cache
