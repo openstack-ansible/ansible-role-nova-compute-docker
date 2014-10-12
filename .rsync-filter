@@ -8,4 +8,5 @@
 - /group_vars
 - /private
 - /roles
++ /templates/etc/supervisor/conf.d/supervisord.conf
 - /templates
