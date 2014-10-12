@@ -10,8 +10,9 @@ RUN if [ ! -f playbooks/group_vars/all.yml ]; then \
     fi
 RUN ansible-playbook -i inventories/local.ini playbooks/install.yml
 
-VOLUME [ "/etc/glance", "/var/lib/glance", "/var/log/glance" ]
+VOLUME [ "/etc/glance", "/var/lib/glance", "/var/log/glance", \
+         "/var/log/supervisor" ]
 
-CMD sudo -u glance /bin/sh -c "/usr/bin/glance-registry & /usr/bin/glance-api"
+CMD [ "/usr/bin/supervisord" ]
 
 EXPOSE 9191 9292

@@ -11,6 +11,23 @@
     - python-mysqldb
     - glance
 
+- name: ensure supervisor is installed for dockerized deployments 
+  apt: 
+    pkg: "{{ item }}"
+    state: latest 
+    update_cache: yes 
+    cache_valid_time: 600
+  with_items:
+    - supervisor
+
+- name: update supervisor configuration from template for dockerized deployments
+  template:
+    src: etc/supervisor/conf.d/supervisord.conf
+    dest: /etc/supervisor/conf.d/supervisord.conf
+    owner: root
+    group: root
+    mode: 0644
+
 - name: ensure glance is started and enabled
   service: 
     name: "{{ item }}"
