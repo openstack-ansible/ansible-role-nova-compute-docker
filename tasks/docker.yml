@@ -46,10 +46,13 @@
           "glance_log_dir" : "{{ glance_log_dir }}",
           "glance_log_verbose" : "{{ glance_log_verbose }}",
           "glance_log_debug" : "{{ glance_log_debug }}",
-          "glance_mysql_host" : "{% if glance_mysql_host == "127.0.0.1" %}{{ ansible_docker0['ipv4']['address'] }}{% else %}{{ glance_mysql_host }}{% endif %}",
+          "glance_mysql_host" : "{{ glance_mysql_host|replace("127.0.0.1", ansible_docker0['ipv4']['address']) }}",
           "glance_mysql_port" : "{{ glance_mysql_port }}",
           "glance_mysql_glance_password" :
-            "{{ glance_mysql_glance_password }}" }'
+            "{{ glance_mysql_glance_password }}",
+          "glance_identity_endpoint_host" : "{{ glance_identity_endpoint_host|replace("127.0.0.1", ansible_docker0['ipv4']['address']) }}",
+          "glance_identity_internal_url" : "{{ glance_identity_internal_url|replace("127.0.0.1", ansible_docker0['ipv4']['address']) }}",
+          "glance_identity_glance_password" : "{{ glance_identity_glance_password }}" }'
     detach: no
     state: present
 
