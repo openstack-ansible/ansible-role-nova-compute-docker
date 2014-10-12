@@ -35,24 +35,41 @@
     dest: /var/lib/glance/glance.sqlite
     state: absent
 
-- name: ensure database is synced, part 1
+- name: ensure glance database has been populated with required tables
   command: /usr/bin/glance-manage db_sync
   when: glance_dockerize_context is defined or
         create_glance_db|changed
   failed_when: false
 
-- name: workaround supposedly fixed utf8 problem
-  command: >
-    /usr/bin/mysql -h {{ glance_mysql_host }} -P {{ glance_mysql_port }} 
-      -u glance --password="{{ glance_mysql_glance_password }}" glance -e 
-      "alter table migrate_version convert to character set utf8 collate utf8_unicode_ci;"
+- name: update glance workaround script from template
+  template:
+    src: var/lib/glance/glance-mysql-utf8-workaround.sh
+    dest: /var/lib/glance/glance-mysql-utf8-workaround.sh
+    owner: glance
+    group: glance
+    mode: 0700 
+
+- name: run glance database workaround script
+  command: /var/lib/glance/glance-mysql-utf8-workaround.sh
   when: glance_dockerize_context is defined or
         create_glance_db|changed
 
-- name: ensure database is synced, part 2
-  command: /usr/bin/glance-manage db_sync
-  when: glance_dockerize_context is defined or
-        create_glance_db|changed
+#- name: workaround supposedly fixed utf8 problem
+#  command: >
+#    /usr/bin/mysql -h {{ glance_mysql_host }} -P {{ glance_mysql_port }} 
+#      -u glance --password="{{ glance_mysql_glance_password }}" glance -e 
+#      "alter table migrate_version convert to character set utf8 collate utf8_unicode_ci;"
+#  when: glance_dockerize_context is defined or
+#        create_glance_db|changed
+#  register: mysql_output
+
+#- debug:
+#    msg: "{{ mysql_output }}"
+
+#- name: ensure database is synced, part 2
+#  command: /usr/bin/glance-manage db_sync
+#  when: glance_dockerize_context is defined or
+#        create_glance_db|changed
 
 - name: restart glance
   service:
