@@ -19,23 +19,17 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     v.memory = 1280
   end
 
-  #config.vm.provision "ansible" do |ansible|
-  #  ansible.playbook = "getreqs.yml"
-  #end
+  config.vm.provision "ansible" do |ansible|
+    ansible.playbook = "getreqs.yml"
+  end
 
-  #config.vm.provision "ansible" do |ansible|
-  #  ansible.playbook = "prep.yml"
-  #  ansible.extra_vars = {
-  #    mariadb_bind_address: "0.0.0.0",
-  #  }
-  #end
+  config.vm.provision "ansible" do |ansible|
+    ansible.playbook = "prep.yml"
+  end
 
-  #config.vm.provision "ansible" do |ansible|
-  #  ansible.playbook = "deploy.yml"
-    #ansible.extra_vars = {
-    #  nova_dockerized_deployment: true
-    #}
-  #end
+  config.vm.provision "ansible" do |ansible|
+    ansible.playbook = "deploy.yml"
+  end
 
   config.vm.provision "ansible" do |ansible|
     ansible.playbook = "test.yml"

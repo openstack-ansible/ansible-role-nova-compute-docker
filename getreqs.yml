@@ -19,7 +19,6 @@
         - mariadb
         - rabbitmq-server
         - keystone
-        - glance
 
     - name: check out library needed for demo deployment from github.com
       git:

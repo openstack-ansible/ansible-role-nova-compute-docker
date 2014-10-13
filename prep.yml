@@ -2,12 +2,14 @@
 - hosts: all
   gather_facts: True
   sudo: True
+  vars:
+    mariadb_bind_address: "0.0.0.0"
+
   roles:
     - marklee77.docker
     - marklee77.mariadb
     - marklee77.rabbitmq-server
     - marklee77.keystone
-    - marklee77.glance
 
 - hosts: all
   gather_facts: True
