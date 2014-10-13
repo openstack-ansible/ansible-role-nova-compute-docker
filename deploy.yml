@@ -2,7 +2,7 @@
 - hosts: all
   sudo: True
   vars:
-    nova_dockerized_deployment: False
+    nova_dockerized_deployment: True
 
   roles:
     - marklee77.nova-controller

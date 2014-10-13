@@ -32,14 +32,9 @@
 
 - name: ensure nova docker image has been built
   docker_image:
-    name: "{{ nova_docker_username }}/nova"
+    name: "{{ nova_docker_username }}/{{ nova_docker_imagename }}"
     path: "{{ ansible_env.PWD }}/.ansible_cache/docker/nova"
     state: present
-  register: docker_image_build
-
-- name: display docker image build output
-  debug:
-    msg: "{{ docker_image_build }}"
 
 - name: ensure nova data container exists
   docker:

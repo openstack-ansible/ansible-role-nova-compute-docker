@@ -4,6 +4,9 @@ MAINTAINER Mark Stillwell <mark@stillwell.me>
 COPY . /var/cache/docker/nova
 WORKDIR /var/cache/docker/nova
 
+# workaround, some kind of versioning problem in nova...
+RUN rm /etc/apt/sources.list.d/proposed.list && apt-get update
+
 RUN if [ ! -f playbooks/group_vars/all.yml ]; then \
       mkdir -p playbooks/group_vars;\
       ln -s ../../defaults/main.yml playbooks/group_vars/all.yml;\
