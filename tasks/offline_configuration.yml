@@ -20,11 +20,11 @@
         value: "{{ nova_rabbitmq_nova_password }}" }
     - { section: DEFAULT, option: rabbit_virtual_host, value: /nova }
     - { section: DEFAULT, option: my_ip, 
-        value: "{{ nova_compute_endpoint_host }}" }
+        value: "127.0.0.1" }
     - { section: DEFAULT, option: vncserver_listen, 
         value: "0.0.0.0" }
     - { section: DEFAULT, option: vncserver_proxyclient_address, 
-        value: "{{ nova_compute_endpoint_host }}" }
+        value: "127.0.0.1" }
     - { section: DEFAULT, option: auth_strategy, value: keystone }
     - { section: database, option: connection,
         value: "mysql://nova:{{ nova_mysql_nova_password }}@{{ 
