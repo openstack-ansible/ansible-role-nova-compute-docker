@@ -15,6 +15,17 @@
     - python-mysqldb
     - python-novaclient
 
+- name: ensure that directories used by nova exist and have correct permissions
+  file:
+    path: "{{ item }}"
+    owner: nova
+    group: nova
+    mode: 0700
+    state: directory
+  with_items:
+    - /var/run/nova
+    - /var/lock/nova
+
 - name: ensure supervisor is installed for dockerized deployments 
   apt: 
     pkg: "{{ item }}"
@@ -31,6 +42,7 @@
     owner: root
     group: root
     mode: 0644
+
 
 - name: ensure nova is started and enabled
   service: 

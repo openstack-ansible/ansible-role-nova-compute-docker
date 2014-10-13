@@ -56,6 +56,11 @@
         create_nova_db|changed
   failed_when: false
 
+- name: remove old log files
+  shell: rm /var/log/nova/*
+  when: nova_dockerize_context is defined or
+        modify_nova_ini|changed
+
 - name: restart nova
   service:
     name: "{{ item }}"
@@ -69,3 +74,4 @@
     - nova-novncproxy
   when: modify_nova_ini|changed and
         nova_dockerize_context is not defined
+
