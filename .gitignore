@@ -2,4 +2,4 @@
 library/*
 private
 roles/*
-!roles/marklee77.glance
+!roles/marklee77.nova-controller
