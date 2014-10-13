@@ -78,8 +78,8 @@
     name: nova
     type: compute
     description: "Compute Service"
-    public_url: "{{ nova_image_public_url }}"
-    internal_url: "{{ nova_image_internal_url }}"
-    admin_url: "{{ nova_image_admin_url }}"
+    public_url: "{{ nova_compute_public_url }}"
+    internal_url: "{{ nova_compute_internal_url }}"
+    admin_url: "{{ nova_compute_admin_url }}"
 
 
