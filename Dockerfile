@@ -13,8 +13,8 @@ RUN if [ ! -f playbooks/group_vars/all.yml ]; then \
     fi
 RUN ansible-playbook -i inventories/local.ini playbooks/install.yml
 
-VOLUME [ "/etc/nova", "/var/lib/nova", "/var/log/nova", \
-         "/var/log/supervisor" ]
+VOLUME [ "/etc/nova", "/var/lib/nova", "/var/run/nova", "/var/lock/nova", \
+         "/var/log/nova", "/var/log/supervisor" ]
 
 CMD [ "/usr/bin/supervisord" ]
 

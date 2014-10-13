@@ -12,7 +12,7 @@ nova_mysql_nova_password: >
                          chars=ascii_letters,digits') }}
 nova_rabbitmq_nova_password: >
   {{ lookup('password', nova_run_dir + 
-                        '/private/credentials/rabbitmq-guest-password 
+                        '/private/credentials/rabbitmq-nova-password 
                          length=20 
                          chars=ascii_letters,digits') }}
 nova_identity_admin_token: >
@@ -38,8 +38,8 @@ nova_rabbitmq_host: 127.0.0.1
 nova_rabbitmq_port: 5672
 
 nova_log_dir: /var/log/nova
-nova_log_verbose: False
-nova_log_debug: False
+nova_log_verbose: true
+nova_log_debug: false
 
 nova_identity_endpoint_host: 127.0.0.1
 nova_identity_admin_url: http://{{ nova_identity_endpoint_host }}:35357/v2.0

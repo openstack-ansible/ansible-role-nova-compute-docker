@@ -15,8 +15,10 @@
         value: "{{ nova_rabbitmq_host }}" }
     - { section: DEFAULT, option: rabbit_port, 
         value: "{{ nova_rabbitmq_port }}" }
+    - { section: DEFAULT, option: rabbit_userid, value: nova }
     - { section: DEFAULT, option: rabbit_password, 
         value: "{{ nova_rabbitmq_nova_password }}" }
+    - { section: DEFAULT, option: rabbit_virtual_host, value: /nova }
     - { section: DEFAULT, option: my_ip, 
         value: "{{ nova_compute_endpoint_host }}" }
     - { section: DEFAULT, option: vncserver_listen, 
