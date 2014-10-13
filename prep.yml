@@ -5,6 +5,7 @@
   roles:
     - marklee77.docker
     - marklee77.mariadb
+    - marklee77.rabbitmq-server
     - marklee77.keystone
     - marklee77.glance
 

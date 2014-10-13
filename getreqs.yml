@@ -17,6 +17,7 @@
         update: yes
       with_items:
         - mariadb
+        - rabbitmq-server
         - keystone
         - glance
 
