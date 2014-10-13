@@ -12,7 +12,7 @@ nova_mysql_nova_password: >
                          chars=ascii_letters,digits') }}
 nova_rabbitmq_nova_password: >
   {{ lookup('password', nova_run_dir + 
-                        '/private/credentials/rabbitmq-nova-password 
+                        '/private/credentials/rabbitmq-guest-password 
                          length=20 
                          chars=ascii_letters,digits') }}
 nova_identity_admin_token: >

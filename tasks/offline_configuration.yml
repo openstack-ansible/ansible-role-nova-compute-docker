@@ -20,7 +20,7 @@
     - { section: DEFAULT, option: my_ip, 
         value: "{{ nova_compute_endpoint_host }}" }
     - { section: DEFAULT, option: vncserver_listen, 
-        value: "{{ nova_compute_endpoint_host }}" }
+        value: "0.0.0.0" }
     - { section: DEFAULT, option: vncserver_proxyclient_address, 
         value: "{{ nova_compute_endpoint_host }}" }
     - { section: DEFAULT, option: auth_strategy, value: keystone }
