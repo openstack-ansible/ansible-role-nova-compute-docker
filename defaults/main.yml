@@ -34,6 +34,9 @@ nova_identity_nova_password: >
 nova_mysql_host: 127.0.0.1
 nova_mysql_port: 3306
 
+nova_rabbitmq_host: 127.0.0.1
+nova_rabbitmq_port: 5672
+
 nova_log_dir: /var/log/nova
 nova_log_verbose: False
 nova_log_debug: False
