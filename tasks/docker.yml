@@ -91,6 +91,7 @@
       - 8773:8773
       - 8774:8774
       - 8775:8775
+    privileged: yes
     detach: yes
     state: running
 
