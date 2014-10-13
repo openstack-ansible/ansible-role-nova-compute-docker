@@ -49,7 +49,7 @@
 
 - name: ensure nova database has been populated with required tables
   sudo_user: nova
-  command: /usr/bin/nova-manage db_sync
+  command: /usr/bin/nova-manage db sync
   when: nova_dockerize_context is defined or
         create_nova_db|changed
   failed_when: false
