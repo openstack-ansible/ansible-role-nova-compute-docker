@@ -58,7 +58,7 @@
 - name: wait until nova service is ready
   wait_for:
     delay: 1
-    host: "{{ nova_image_endpoint_host }}"
+    host: "{{ nova_compute_endpoint_host }}"
     port: 8774
     state: started
 

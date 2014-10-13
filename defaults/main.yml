@@ -44,9 +44,9 @@ nova_identity_internal_url: http://{{ nova_identity_endpoint_host }}:5000/v2.0
 nova_identity_public_url: http://{{ nova_identity_endpoint_host }}:5000/v2.0
 
 nova_compute_endpoint_host: 127.0.0.1
-nova_compute_admin_url: http://{{ nova_image_endpoint_host }}:8774/v2/%(tenant_id)s
-nova_compute_internal_url: http://{{ nova_image_endpoint_host }}:8774/v2/%(tenant_id)s
-nova_compute_public_url: http://{{ nova_image_endpoint_host }}:8774/v2/%(tenant_id)s
+nova_compute_admin_url: http://{{ nova_compute_endpoint_host }}:8774/v2/%(tenant_id)s
+nova_compute_internal_url: http://{{ nova_compute_endpoint_host }}:8774/v2/%(tenant_id)s
+nova_compute_public_url: http://{{ nova_compute_endpoint_host }}:8774/v2/%(tenant_id)s
 
 nova_identity_region: RegionOne
 nova_identity_demo_password: password
