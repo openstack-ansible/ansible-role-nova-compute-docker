@@ -1,9 +1,9 @@
-marklee77.glance
-=================
+marklee77.nova-controller
+=========================
 
-[![Build Status](https://travis-ci.org/marklee77/ansible-role-glance.svg?branch=master)](https://travis-ci.org/marklee77/ansible-role-glance)
+[![Build Status](https://travis-ci.org/marklee77/ansible-role-nova-controller.svg?branch=master)](https://travis-ci.org/marklee77/ansible-role-nova-controller)
 
-The purpose of this role is to deploy glance onto Ubuntu. There is also an
+The purpose of this role is to deploy nova-controller onto Ubuntu. There is also an
 support for an experimental "dockerized" deployment. This dockerized deployment
 copies the role to the target machine and uses the original ansible-based
 functionality to build a docker image, and then uses recent ansible features to
@@ -17,19 +17,19 @@ not (easily) run on travis.
 Role Variables
 --------------
 
-- glance_repository_mirror: http://mirrors.coreix.net/glance by default.
-- glance_version: 10.0
-- glance_mysql_root_password: random value
-- glance_enable_remote: false
-- glance_set_root_password: true
+- nova-controller_repository_mirror: http://mirrors.coreix.net/nova-controller by default.
+- nova-controller_version: 10.0
+- nova-controller_mysql_root_password: random value
+- nova-controller_enable_remote: false
+- nova-controller_set_root_password: true
 
 The variables below only affect the dockerized deployment:
 
-- glance_dockerized_deployment: false
-- glance_docker_username: default
-- glance_docker_imagename: glance
-- glance_docker_containername: glance
-- glance_port: 3306
+- nova-controller_dockerized_deployment: false
+- nova-controller_docker_username: default
+- nova-controller_docker_imagename: nova-controller
+- nova-controller_docker_containername: nova-controller
+- nova-controller_port: 3306
 
 Example Playbook
 -------------------------
@@ -37,7 +37,7 @@ Example Playbook
     - hosts: all
       sudo: True
       roles:
-        - marklee77.glance
+        - marklee77.nova-controller
 
 License
 -------
@@ -58,6 +58,8 @@ Known Issues
 Todo
 ----
 
-- delegate_to in order to allow for installing on hosts different from glance host...
-- consider making mapping of glance port to host interface optional
+- metadata...
+- separate nova-api from nova-controller?
+- delegate_to in order to allow for installing on hosts different from nova-controller host...
+- consider making mapping of nova-controller port to host interface optional
 - eventually, we're going to need a better way to pass in variables...

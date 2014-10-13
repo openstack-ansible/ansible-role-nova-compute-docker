@@ -2,4 +2,4 @@
 # This file is ONLY for variables that are expected to be static across all
 # deployments or that may affect the image BUILD. Configuration and runtime
 # variables should be passed directly.
-glance_dockerize_context: docker
+nova_dockerize_context: docker

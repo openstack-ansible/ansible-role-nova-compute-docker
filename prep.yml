@@ -6,6 +6,7 @@
     - marklee77.docker
     - marklee77.mariadb
     - marklee77.keystone
+    - marklee77.glance
 
 - hosts: all
   gather_facts: True

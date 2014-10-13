@@ -1,15 +1,19 @@
 ---
-- name: ensure glance packages and dependencies are installed
+- name: ensure nova packages and dependencies are installed
   apt: 
     pkg: "{{ item }}"
     state: latest 
     update_cache: yes 
     cache_valid_time: 600
   with_items:
-    - mysql-client
-    - python-glanceclient
+    - nova-api
+    - nova-cert
+    - nova-conductor
+    - nova-consoleauth
+    - nova-novncproxy
+    - nova-scheduler
     - python-mysqldb
-    - glance
+    - python-novaclient
 
 - name: ensure supervisor is installed for dockerized deployments 
   apt: 
@@ -28,21 +32,29 @@
     group: root
     mode: 0644
 
-- name: ensure glance is started and enabled
+- name: ensure nova is started and enabled
   service: 
     name: "{{ item }}"
     state: started 
     enabled: yes
   with_items:
-    - glance-registry
-    - glance-api
+    - nova-api
+    - nova-cert
+    - nova-consoleauth
+    - nova-scheduler
+    - nova-conductor
+    - nova-novncproxy
 
-- name: ensure glance is properly shut down for dockerized deployments
+- name: ensure nova is properly shut down for dockerized deployments
   service:
     name: "{{ item }}"
     state: stopped
     enabled: yes
   with_items:
-    - glance-registry
-    - glance-api
-  when: glance_dockerize_context is defined
+    - nova-api
+    - nova-cert
+    - nova-consoleauth
+    - nova-scheduler
+    - nova-conductor
+    - nova-novncproxy
+  when: nova_dockerize_context is defined

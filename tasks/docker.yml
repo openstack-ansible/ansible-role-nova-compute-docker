@@ -11,7 +11,7 @@
 - name: synchronize role to remote cache for Dockerfile build
   synchronize:
     src: ../
-    dest: "{{ ansible_env.PWD }}/.ansible_cache/docker/glance"
+    dest: "{{ ansible_env.PWD }}/.ansible_cache/docker/nova"
     archive: no
     checksum: yes
     recursive: yes
@@ -22,47 +22,57 @@
     owner: "{{ ansible_ssh_user }}"
     state: directory
   with_items:
-    - "{{ ansible_env.PWD }}/.ansible_cache/docker/glance/playbooks/group_vars"
+    - "{{ ansible_env.PWD }}/.ansible_cache/docker/nova/playbooks/group_vars"
 
 - name: update configuration used to build docker image from template
   template:
-    src: ansible_cache/docker/glance/playbooks/group_vars/all.yml
+    src: ansible_cache/docker/nova/playbooks/group_vars/all.yml
     owner: "{{ ansible_ssh_user }}"
-    dest: "{{ ansible_env.PWD }}/.ansible_cache/docker/glance/playbooks/group_vars/all.yml"
+    dest: "{{ ansible_env.PWD }}/.ansible_cache/docker/nova/playbooks/group_vars/all.yml"
 
-- name: ensure glance docker image has been built
+- name: ensure nova docker image has been built
   docker_image:
-    name: "{{ glance_docker_username }}/glance"
-    path: "{{ ansible_env.PWD }}/.ansible_cache/docker/glance"
+    name: "{{ nova_docker_username }}/nova"
+    path: "{{ ansible_env.PWD }}/.ansible_cache/docker/nova"
     state: present
+  register: docker_image_build
 
-- name: ensure glance data container exists
+- name: display docker image build output
+  debug:
+    msg: "{{ docker_image_build }}"
+
+- name: ensure nova data container exists
   docker:
-    image: "{{ glance_docker_username }}/{{ glance_docker_imagename }}"
-    name: "{{ glance_docker_containername }}_data"
+    image: "{{ nova_docker_username }}/{{ nova_docker_imagename }}"
+    name: "{{ nova_docker_containername }}_data"
     command: >
       ansible-playbook 
         -i inventories/local.ini playbooks/offline_configuration.yml -e '{ 
-          "glance_log_dir" : "{{ glance_log_dir }}",
-          "glance_log_verbose" : "{{ glance_log_verbose }}",
-          "glance_log_debug" : "{{ glance_log_debug }}",
-          "glance_mysql_host" : "{{ glance_mysql_host|replace("127.0.0.1", ansible_docker0['ipv4']['address']) }}",
-          "glance_mysql_port" : "{{ glance_mysql_port }}",
-          "glance_mysql_glance_password" :
-            "{{ glance_mysql_glance_password }}",
-          "glance_identity_endpoint_host" : "{{ glance_identity_endpoint_host|replace("127.0.0.1", ansible_docker0['ipv4']['address']) }}",
-          "glance_identity_internal_url" : "{{ glance_identity_internal_url|replace("127.0.0.1", ansible_docker0['ipv4']['address']) }}",
-          "glance_identity_glance_password" : "{{ glance_identity_glance_password }}" }'
+          "nova_log_verbose" : "{{ nova_log_verbose }}",
+          "nova_log_debug" : "{{ nova_log_debug }}",
+          "nova_log_dir" : "{{ nova_log_dir }}",
+          "nova_rabbitmq_host" : "{{ nova_rabbitmq_host|replace("127.0.0.1", ansible_docker0['ipv4']['address']) }}",
+          "nova_rabbitmq_port" : "{{ nova_rabbitmq_port }}",
+          "nova_rabbitmq_nova_password" :
+            "{{ nova_rabbitmq_nova_password }}",
+          "nova_mysql_host" : "{{ nova_mysql_host|replace("127.0.0.1", ansible_docker0['ipv4']['address']) }}",
+          "nova_mysql_port" : "{{ nova_mysql_port }}",
+          "nova_mysql_nova_password" :
+            "{{ nova_mysql_nova_password }}",
+          "nova_compute_endpoint_host" : "{{ nova_compute_endpoint_host|replace("127.0.0.1", ansible_docker0['ipv4']['address']) }}",
+          "nova_identity_endpoint_host" : "{{ nova_identity_endpoint_host|replace("127.0.0.1", ansible_docker0['ipv4']['address']) }}",
+          "nova_identity_internal_url" : "{{ nova_identity_internal_url|replace("127.0.0.1", ansible_docker0['ipv4']['address']) }}",
+          "nova_identity_nova_password" : "{{ nova_identity_nova_password }}" }'
     detach: no
     state: present
 
 - name: wait until offline configuration is completed
-  command: docker wait "{{ glance_docker_containername }}_data"
+  command: docker wait "{{ nova_docker_containername }}_data"
   register: docker_wait
   changed_when: false
 
 - name: collect offline configuration log
-  command: docker logs "{{ glance_docker_containername }}_data"
+  command: docker logs "{{ nova_docker_containername }}_data"
   register: offline_configuration_log
   changed_when: false
 
@@ -74,14 +84,13 @@
   assert:
     that: docker_wait.stdout == "0"
 
-- name: ensure glance service is running
+- name: ensure nova service is running
   docker:
-    image: "{{ glance_docker_username }}/{{ glance_docker_imagename }}"
-    name: "{{ glance_docker_containername }}_server"
-    volumes_from: "{{ glance_docker_containername }}_data"
+    image: "{{ nova_docker_username }}/{{ nova_docker_imagename }}"
+    name: "{{ nova_docker_containername }}_server"
+    volumes_from: "{{ nova_docker_containername }}_data"
     ports:
-      - 9191:9191
-      - 9292:9292
+      - 8774:8774
     detach: yes
     state: running
 

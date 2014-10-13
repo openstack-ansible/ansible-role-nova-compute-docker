@@ -1,68 +1,85 @@
 ---
-- name: ensure glance database is present
+- name: ensure nova database is present
   mysql_db:
-    login_host: "{{ glance_mysql_host }}"
-    login_port: "{{ glance_mysql_port }}"
+    login_host: "{{ nova_mysql_host }}"
+    login_port: "{{ nova_mysql_port }}"
     login_user: root
-    login_password: "{{ glance_mysql_root_password }}"
-    name: glance
-  register: create_glance_db
+    login_password: "{{ nova_mysql_root_password }}"
+    name: nova
+  register: create_nova_db
 
-- name: ensure glance database user is present
+- name: ensure nova database user is present
   mysql_user:
-    login_host: "{{ glance_mysql_host }}"
-    login_port: "{{ glance_mysql_port }}"
+    login_host: "{{ nova_mysql_host }}"
+    login_port: "{{ nova_mysql_port }}"
     login_user: root
-    login_password: "{{ glance_mysql_root_password }}"
-    name: glance
+    login_password: "{{ nova_mysql_root_password }}"
+    name: nova
     host: "{{ item }}"
-    password: "{{ glance_mysql_glance_password }}"
-    priv: glance.*:ALL
+    password: "{{ nova_mysql_nova_password }}"
+    priv: nova.*:ALL
   with_items:
     - localhost
     - "%"
 
-- name: create glance user in keystone
+- name: ensure nova rabbitmq vhost is present
+  rabbitmq_vhost:
+    name: /nova
+    state: present
+
+- name: ensure nova rabbitmq user is present
+  rabbitmq_user:
+    user: nova
+    password: "{{ nova_rabbitmq_nova_password }}"
+    vhost: /nova
+    configure_priv: .*
+    read_priv: .*
+    write_priv: .*
+    state: present
+    force: yes
+
+- name: create nova user in keystone
   keystone_user:
-    endpoint: "{{ glance_identity_admin_url }}"
-    token: "{{ glance_identity_admin_token }}"
+    endpoint: "{{ nova_identity_admin_url }}"
+    token: "{{ nova_identity_admin_token }}"
     tenant: service
-    user: glance
-    password: "{{ glance_identity_glance_password }}"
+    user: nova
+    password: "{{ nova_identity_nova_password }}"
+
 - include: docker.yml
-  when: glance_dockerized_deployment
+  when: nova_dockerized_deployment
 
 - include: install.yml
-  when: not glance_dockerized_deployment 
+  when: not nova_dockerized_deployment 
 
 - include: offline_configuration.yml
-  when: not glance_dockerized_deployment 
+  when: not nova_dockerized_deployment 
 
-- name: wait until glance service is ready
+- name: wait until nova service is ready
   wait_for:
     delay: 1
-    host: "{{ glance_image_endpoint_host }}"
-    port: 9292
+    host: "{{ nova_image_endpoint_host }}"
+    port: 8774
     state: started
 
-- name: add glance user to the service tenant with the admin role
+- name: add nova user to the service tenant with the admin role
   keystone_user:
-    endpoint: "{{ glance_identity_admin_url }}"
-    token: "{{ glance_identity_admin_token }}"
+    endpoint: "{{ nova_identity_admin_url }}"
+    token: "{{ nova_identity_admin_token }}"
     tenant: service
-    user: glance
+    user: nova
     role: admin
 
-- name: add glance endpoint
+- name: add nova endpoint
   keystone_service:
-    endpoint: "{{ glance_identity_admin_url }}"
-    token: "{{ glance_identity_admin_token }}"
-    region: "{{ glance_identity_region }}"
-    name: glance
-    type: image
-    description: "Image Service"
-    public_url: "{{ glance_image_public_url }}"
-    internal_url: "{{ glance_image_internal_url }}"
-    admin_url: "{{ glance_image_admin_url }}"
+    endpoint: "{{ nova_identity_admin_url }}"
+    token: "{{ nova_identity_admin_token }}"
+    region: "{{ nova_identity_region }}"
+    name: nova
+    type: compute
+    description: "Compute Service"
+    public_url: "{{ nova_image_public_url }}"
+    internal_url: "{{ nova_image_internal_url }}"
+    admin_url: "{{ nova_image_admin_url }}"
 
 

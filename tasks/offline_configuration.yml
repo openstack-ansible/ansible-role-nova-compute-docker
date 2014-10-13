@@ -1,84 +1,69 @@
 ---
-- name: ensure glance is properly configured
+# FIXME: my_ip and vncserver settings will require tinkering...
+- name: ensure nova is properly configured
   ini_file:
-    dest: /etc/glance/glance-{{ item[0] }}.conf
-    section: "{{ item[1].section }}"
-    option: "{{ item[1].option }}"
-    value: "{{ item[1].value }}"
-  with_nested:
-    - [ 'api', 'registry' ]
-    - 
-      - { section: DEFAULT, option: verbose, value: "{{ glance_log_verbose }}" }
-      - { section: DEFAULT, option: debug, value: "{{ glance_log_debug }}" }
-      - { section: DEFAULT, option: log_dir, value: "{{ glance_log_dir }}" }
-      - { section: database, option: connection,
-          value: "mysql://glance:{{ glance_mysql_glance_password }}@{{ 
-                    glance_mysql_host }}:{{ glance_mysql_port }}/glance" }
-      - { section: database, option: db_enforce_mysql_charset,
-          value: False }
-      - { section: keystone_authtoken, option: auth_uri, 
-          value: "{{ glance_identity_internal_url }}" }
-      - { section: keystone_authtoken, option: auth_host, 
-          value: "{{ glance_identity_endpoint_host }}" }
-      - { section: keystone_authtoken, option: auth_port, value: 35357 }
-      - { section: keystone_authtoken, option: auth_protocol, value: http }
-      - { section: keystone_authtoken, option: admin_tenant_name, 
-          value: service }
-      - { section: keystone_authtoken, option: admin_user, value: glance }
-      - { section: keystone_authtoken, option: admin_password, 
-          value: "{{ glance_identity_glance_password }}" }
-      - { section: paste_deploy, option: flavor, value: keystone }
-  register: modify_glance_ini
+    dest: /etc/nova/nova.conf
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+    - { section: DEFAULT, option: verbose, value: "{{ nova_log_verbose }}" }
+    - { section: DEFAULT, option: debug, value: "{{ nova_log_debug }}" }
+    - { section: DEFAULT, option: log_dir, value: "{{ nova_log_dir }}" }
+    - { section: DEFAULT, option: rpc_backend, value: rabbit }
+    - { section: DEFAULT, option: rabbit_host, 
+        value: "{{ nova_rabbitmq_host }}" }
+    - { section: DEFAULT, option: rabbit_port, 
+        value: "{{ nova_rabbitmq_port }}" }
+    - { section: DEFAULT, option: rabbit_password, 
+        value: "{{ nova_rabbitmq_nova_password }}" }
+    - { section: DEFAULT, option: my_ip, 
+        value: "{{ nova_compute_endpoint_host }}" }
+    - { section: DEFAULT, option: vncserver_listen, 
+        value: "{{ nova_compute_endpoint_host }}" }
+    - { section: DEFAULT, option: vncserver_proxyclient_address, 
+        value: "{{ nova_compute_endpoint_host }}" }
+    - { section: DEFAULT, option: auth_strategy, value: keystone }
+    - { section: database, option: connection,
+        value: "mysql://nova:{{ nova_mysql_nova_password }}@{{ 
+                  nova_mysql_host }}:{{ nova_mysql_port }}/nova" }
+    - { section: database, option: db_enforce_mysql_charset,
+        value: False }
+    - { section: keystone_authtoken, option: auth_uri, 
+        value: "{{ nova_identity_internal_url }}" }
+    - { section: keystone_authtoken, option: auth_host, 
+        value: "{{ nova_identity_endpoint_host }}" }
+    - { section: keystone_authtoken, option: auth_port, value: 35357 }
+    - { section: keystone_authtoken, option: auth_protocol, value: http }
+    - { section: keystone_authtoken, option: admin_tenant_name, 
+        value: service }
+    - { section: keystone_authtoken, option: admin_user, value: nova }
+    - { section: keystone_authtoken, option: admin_password, 
+        value: "{{ nova_identity_nova_password }}" }
+  register: modify_nova_ini
 
-- name: ensure glance sqlite is deleted
+- name: ensure nova sqlite is deleted
   file:
-    dest: /var/lib/glance/glance.sqlite
+    dest: /var/lib/nova/nova.sqlite
     state: absent
 
-- name: ensure glance database has been populated with required tables
-  sudo_user: glance
-  command: /usr/bin/glance-manage db_sync
-  when: glance_dockerize_context is defined or
-        create_glance_db|changed
+- name: ensure nova database has been populated with required tables
+  sudo_user: nova
+  command: /usr/bin/nova-manage db_sync
+  when: nova_dockerize_context is defined or
+        create_nova_db|changed
   failed_when: false
 
-- name: update glance workaround script from template
-  template:
-    src: var/lib/glance/glance-mysql-utf8-workaround.sh
-    dest: /var/lib/glance/glance-mysql-utf8-workaround.sh
-    owner: glance
-    group: glance
-    mode: 0700 
-
-- name: run glance database workaround script
-  sudo_user: glance
-  command: /var/lib/glance/glance-mysql-utf8-workaround.sh
-  when: glance_dockerize_context is defined or
-        create_glance_db|changed
-
-#- name: workaround supposedly fixed utf8 problem
-#  command: >
-#    /usr/bin/mysql -h {{ glance_mysql_host }} -P {{ glance_mysql_port }} 
-#      -u glance --password="{{ glance_mysql_glance_password }}" glance -e 
-#      "alter table migrate_version convert to character set utf8 collate utf8_unicode_ci;"
-#  when: glance_dockerize_context is defined or
-#        create_glance_db|changed
-#  register: mysql_output
-
-#- debug:
-#    msg: "{{ mysql_output }}"
-
-#- name: ensure database is synced, part 2
-#  command: /usr/bin/glance-manage db_sync
-#  when: glance_dockerize_context is defined or
-#        create_glance_db|changed
-
-- name: restart glance
+- name: restart nova
   service:
     name: "{{ item }}"
     state: restarted
   with_items:
-    - glance-registry
-    - glance-api
-  when: modify_glance_ini|changed and
-        glance_dockerize_context is not defined
+    - nova-api
+    - nova-cert
+    - nova-consoleauth
+    - nova-scheduler
+    - nova-conductor
+    - nova-novncproxy
+  when: modify_nova_ini|changed and
+        nova_dockerize_context is not defined

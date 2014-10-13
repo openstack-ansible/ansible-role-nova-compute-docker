@@ -1,53 +1,53 @@
 ---
-glance_run_dir: "{{ lookup('env', 'PWD') }}"
-glance_mysql_root_password: >
-  {{ lookup('password', glance_run_dir + 
+nova_run_dir: "{{ lookup('env', 'PWD') }}"
+nova_mysql_root_password: >
+  {{ lookup('password', nova_run_dir + 
                         '/private/credentials/mysql-root-password 
                          length=20 
                          chars=ascii_letters,digits') }}
-glance_mysql_glance_password: >
-  {{ lookup('password', glance_run_dir + 
-                        '/private/credentials/mysql-glance-password 
+nova_mysql_nova_password: >
+  {{ lookup('password', nova_run_dir + 
+                        '/private/credentials/mysql-nova-password 
                          length=20 
                          chars=ascii_letters,digits') }}
-glance_identity_admin_token: >
-  {{ lookup('password', glance_run_dir + 
+nova_identity_admin_token: >
+  {{ lookup('password', nova_run_dir + 
                         '/private/credentials/keystone-admin-token 
                          length=20 
                          chars=ascii_letters,digits') }}
-glance_identity_admin_password: >
-  {{ lookup('password', glance_run_dir + 
+nova_identity_admin_password: >
+  {{ lookup('password', nova_run_dir + 
                         '/private/credentials/keystone-admin-password 
                          length=20 
                          chars=ascii_letters,digits') }}
-glance_identity_glance_password: >
-  {{ lookup('password', glance_run_dir + 
-                        '/private/credentials/keystone-glance-password 
+nova_identity_nova_password: >
+  {{ lookup('password', nova_run_dir + 
+                        '/private/credentials/keystone-nova-password 
                          length=20 
                          chars=ascii_letters,digits') }}
 
-glance_mysql_host: 127.0.0.1
-glance_mysql_port: 3306
+nova_mysql_host: 127.0.0.1
+nova_mysql_port: 3306
 
-glance_log_dir: /var/log/glance
-glance_log_verbose: False
-glance_log_debug: False
+nova_log_dir: /var/log/nova
+nova_log_verbose: False
+nova_log_debug: False
 
-glance_identity_endpoint_host: 127.0.0.1
-glance_identity_admin_url: http://{{ glance_identity_endpoint_host }}:35357/v2.0
-glance_identity_internal_url: http://{{ glance_identity_endpoint_host }}:5000/v2.0
-glance_identity_public_url: http://{{ glance_identity_endpoint_host }}:5000/v2.0
+nova_identity_endpoint_host: 127.0.0.1
+nova_identity_admin_url: http://{{ nova_identity_endpoint_host }}:35357/v2.0
+nova_identity_internal_url: http://{{ nova_identity_endpoint_host }}:5000/v2.0
+nova_identity_public_url: http://{{ nova_identity_endpoint_host }}:5000/v2.0
 
-glance_image_endpoint_host: 127.0.0.1
-glance_image_admin_url: http://{{ glance_image_endpoint_host }}:9292
-glance_image_internal_url: http://{{ glance_image_endpoint_host }}:9292
-glance_image_public_url: http://{{ glance_image_endpoint_host }}:9292
+nova_image_endpoint_host: 127.0.0.1
+nova_image_admin_url: http://{{ nova_image_endpoint_host }}:9292
+nova_image_internal_url: http://{{ nova_image_endpoint_host }}:9292
+nova_image_public_url: http://{{ nova_image_endpoint_host }}:9292
 
-glance_identity_region: RegionOne
-glance_identity_demo_password: password
+nova_identity_region: RegionOne
+nova_identity_demo_password: password
 
 # The variables below only apply to dockerized deployment
-glance_dockerized_deployment: false
-glance_docker_username: default
-glance_docker_imagename: glance
-glance_docker_containername: glance
+nova_dockerized_deployment: false
+nova_docker_username: default
+nova_docker_imagename: nova-controller
+nova_docker_containername: nova-controller

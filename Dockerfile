@@ -1,8 +1,8 @@
 FROM ansible/ubuntu14.04-ansible:stable
 MAINTAINER Mark Stillwell <mark@stillwell.me>
 
-COPY . /var/cache/docker/glance
-WORKDIR /var/cache/docker/glance
+COPY . /var/cache/docker/nova
+WORKDIR /var/cache/docker/nova
 
 RUN if [ ! -f playbooks/group_vars/all.yml ]; then \
       mkdir -p playbooks/group_vars;\
@@ -10,7 +10,7 @@ RUN if [ ! -f playbooks/group_vars/all.yml ]; then \
     fi
 RUN ansible-playbook -i inventories/local.ini playbooks/install.yml
 
-VOLUME [ "/etc/glance", "/var/lib/glance", "/var/log/glance", \
+VOLUME [ "/etc/nova", "/var/lib/nova", "/var/log/nova", \
          "/var/log/supervisor" ]
 
 CMD [ "/usr/bin/supervisord" ]
