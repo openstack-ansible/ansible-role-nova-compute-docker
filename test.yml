@@ -1,7 +1,8 @@
 ---
 - hosts: all
   sudo: False
- 
+  vars:
+    cirros_url: http://download.cirros-cloud.net/0.3.1/cirros-0.3.1-x86_64-disk.img
   tasks:
 
     - name: update admin.openrc from template
@@ -33,6 +34,26 @@
         user: demo
         role: _member_
 
+    - name: update demo.openrc template
+      template:
+        src: templates/demo.openrc
+        dest: "{{ ansible_env.PWD }}/demo.openrc"
+        mode: 0600
+
+    - name: ensure cirros image is registered
+      glance_image:
+        auth_url: "{{ keystone_public_url }}"
+        login_tenant_name: demo
+        login_username: demo
+        login_password: "{{ nova_identity_demo_password }}"
+        name: cirros-0.3.1-x86_64
+        disk_format: qcow2
+        copy_from: "{{ cirros_url }}"
+        is_public: True
+        timeout: 1200
+        state: present
+      register: cirros_image
+
     - name: create ssh keypair
       command: ssh-keygen -q -f {{ ansible_env.PWD }}/.ssh/id_rsa -P ""
                creates={{ ansible_env.PWD }}/.ssh/id_rsa
@@ -52,3 +73,14 @@
         public_key: "{{ pubkey.stdout }}"
         state: present
 
+    - name: create a new virtual machine instance
+      nova_compute:
+        auth_url: "{{ keystone_public_url }}"
+        login_tenant_name: demo
+        login_username: demo
+        login_password: "{{ nova_identity_demo_password }}"
+        name: cirros
+        flavor_id: 1
+        image_id: "{{ cirros_image.id }}"
+        key_name: default
+        state: present
