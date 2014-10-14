@@ -1,6 +1,6 @@
 ---
 # FIXME: my_ip and vncserver settings will require tinkering...
-- name: ensure nova is properly configured
+- name: ensure nova.conf is properly configured
   ini_file:
     dest: /etc/nova/nova.conf
     section: "{{ item.section }}"
@@ -19,18 +19,20 @@
     - { section: DEFAULT, option: rabbit_password, 
         value: "{{ nova_rabbitmq_nova_password }}" }
     - { section: DEFAULT, option: rabbit_virtual_host, value: /nova }
+    - { section: DEFAULT, option: glance_host, 
+        value: "{{ nova_glance_host }}" }
     - { section: DEFAULT, option: my_ip, 
         value: "127.0.0.1" }
     - { section: DEFAULT, option: vncserver_listen, 
         value: "0.0.0.0" }
     - { section: DEFAULT, option: vncserver_proxyclient_address, 
         value: "127.0.0.1" }
+    - { section: DEFAULT, option: novncproxy_base_url,
+        value: http://127.0.0.1:6080/vnc_auto.html }
     - { section: DEFAULT, option: auth_strategy, value: keystone }
     - { section: database, option: connection,
         value: "mysql://nova:{{ nova_mysql_nova_password }}@{{ 
                   nova_mysql_host }}:{{ nova_mysql_port }}/nova" }
-    - { section: database, option: db_enforce_mysql_charset,
-        value: False }
     - { section: keystone_authtoken, option: auth_uri, 
         value: "{{ nova_identity_internal_url }}" }
     - { section: keystone_authtoken, option: auth_host, 
@@ -44,21 +46,24 @@
         value: "{{ nova_identity_nova_password }}" }
   register: modify_nova_ini
 
+- name: ensure nova-compute.conf is properly configured
+  ini_file:
+    dest: /etc/nova/nova-compute.conf
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+    - { section: libvirt, option: virt_type, 
+        value: "{{ nova_compute_virt_type }}" }
+ 
 - name: ensure nova sqlite is deleted
   file:
     dest: /var/lib/nova/nova.sqlite
     state: absent
 
-- name: ensure nova database has been populated with required tables
-  sudo_user: nova
-  command: /usr/bin/nova-manage db sync
-  when: nova_dockerize_context is defined or
-        create_nova_db|changed
-  failed_when: false
-
 - name: remove old log files
   shell: rm /var/log/nova/*
-  when: nova_dockerize_context is defined or
+  when: nova_compute_dockerize_context is defined or
         modify_nova_ini|changed
 
 - name: restart nova
@@ -66,12 +71,7 @@
     name: "{{ item }}"
     state: restarted
   with_items:
-    - nova-api
-    - nova-cert
-    - nova-consoleauth
-    - nova-scheduler
-    - nova-conductor
-    - nova-novncproxy
+    - nova-compute
   when: modify_nova_ini|changed and
-        nova_dockerize_context is not defined
+        nova_compute_dockerize_context is not defined
 

@@ -1,19 +1,12 @@
 ---
-- name: ensure nova packages and dependencies are installed
+- name: ensure nova compute packages and dependencies are installed
   apt: 
     pkg: "{{ item }}"
     state: latest 
     update_cache: yes 
     cache_valid_time: 600
   with_items:
-    - nova-api
-    - nova-cert
-    - nova-conductor
-    - nova-consoleauth
-    - nova-novncproxy
-    - nova-scheduler
-    - python-mysqldb
-    - python-novaclient
+    - "{{ nova_compute_package }}"
 
 - name: ensure that directories used by nova exist and have correct permissions
   file:
@@ -43,30 +36,19 @@
     group: root
     mode: 0644
 
-
-- name: ensure nova is started and enabled
+- name: ensure nova compute is started and enabled
   service: 
     name: "{{ item }}"
     state: started 
     enabled: yes
   with_items:
-    - nova-api
-    - nova-cert
-    - nova-consoleauth
-    - nova-scheduler
-    - nova-conductor
-    - nova-novncproxy
+    - nova-compute
 
-- name: ensure nova is properly shut down for dockerized deployments
+- name: ensure nova compute is properly shut down for dockerized deployments
   service:
     name: "{{ item }}"
     state: stopped
     enabled: yes
   with_items:
-    - nova-api
-    - nova-cert
-    - nova-consoleauth
-    - nova-scheduler
-    - nova-conductor
-    - nova-novncproxy
-  when: nova_dockerize_context is defined
+    - nova-compute
+  when: nova_compute_dockerize_context is defined

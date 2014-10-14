@@ -11,7 +11,7 @@
 - name: synchronize role to remote cache for Dockerfile build
   synchronize:
     src: ../
-    dest: "{{ ansible_env.PWD }}/.ansible_cache/docker/nova"
+    dest: "{{ ansible_env.PWD }}/.ansible_cache/docker/nova-compute"
     archive: no
     checksum: yes
     recursive: yes
@@ -22,24 +22,24 @@
     owner: "{{ ansible_ssh_user }}"
     state: directory
   with_items:
-    - "{{ ansible_env.PWD }}/.ansible_cache/docker/nova/playbooks/group_vars"
+    - "{{ ansible_env.PWD }}/.ansible_cache/docker/nova-compute/playbooks/group_vars"
 
 - name: update configuration used to build docker image from template
   template:
-    src: ansible_cache/docker/nova/playbooks/group_vars/all.yml
+    src: ansible_cache/docker/nova-compute/playbooks/group_vars/all.yml
     owner: "{{ ansible_ssh_user }}"
-    dest: "{{ ansible_env.PWD }}/.ansible_cache/docker/nova/playbooks/group_vars/all.yml"
+    dest: "{{ ansible_env.PWD }}/.ansible_cache/docker/nova-compute/playbooks/group_vars/all.yml"
 
 - name: ensure nova docker image has been built
   docker_image:
-    name: "{{ nova_docker_username }}/{{ nova_docker_imagename }}"
-    path: "{{ ansible_env.PWD }}/.ansible_cache/docker/nova"
+    name: "{{ nova_compute_docker_username }}/{{ nova_compute_docker_imagename }}"
+    path: "{{ ansible_env.PWD }}/.ansible_cache/docker/nova-compute"
     state: present
 
 - name: ensure nova data container exists
   docker:
-    image: "{{ nova_docker_username }}/{{ nova_docker_imagename }}"
-    name: "{{ nova_docker_containername }}_data"
+    image: "{{ nova_compute_docker_username }}/{{ nova_compute_docker_imagename }}"
+    name: "{{ nova_compute_docker_containername }}_data"
     command: >
       ansible-playbook 
         -i inventories/local.ini playbooks/offline_configuration.yml -e '{ 
@@ -50,6 +50,7 @@
           "nova_rabbitmq_port" : "{{ nova_rabbitmq_port }}",
           "nova_rabbitmq_nova_password" :
             "{{ nova_rabbitmq_nova_password }}",
+          "nova_glance_host" : "{{ nova_glance_host|replace("127.0.0.1", ansible_docker0['ipv4']['address']) }}",
           "nova_mysql_host" : "{{ nova_mysql_host|replace("127.0.0.1", ansible_docker0['ipv4']['address']) }}",
           "nova_mysql_port" : "{{ nova_mysql_port }}",
           "nova_mysql_nova_password" :
@@ -57,17 +58,18 @@
           "nova_compute_endpoint_host" : "{{ nova_compute_endpoint_host|replace("127.0.0.1", ansible_docker0['ipv4']['address']) }}",
           "nova_identity_endpoint_host" : "{{ nova_identity_endpoint_host|replace("127.0.0.1", ansible_docker0['ipv4']['address']) }}",
           "nova_identity_internal_url" : "{{ nova_identity_internal_url|replace("127.0.0.1", ansible_docker0['ipv4']['address']) }}",
-          "nova_identity_nova_password" : "{{ nova_identity_nova_password }}" }'
+          "nova_identity_nova_password" : "{{ nova_identity_nova_password }}",
+          "nova_compute_virt_type" : "{{ nova_compute_virt_type }}" }'
     detach: no
     state: present
 
 - name: wait until offline configuration is completed
-  command: docker wait "{{ nova_docker_containername }}_data"
+  command: docker wait "{{ nova_compute_docker_containername }}_data"
   register: docker_wait
   changed_when: false
 
 - name: collect offline configuration log
-  command: docker logs "{{ nova_docker_containername }}_data"
+  command: docker logs "{{ nova_compute_docker_containername }}_data"
   register: offline_configuration_log
   changed_when: false
 
@@ -81,9 +83,9 @@
 
 - name: ensure nova service is running
   docker:
-    image: "{{ nova_docker_username }}/{{ nova_docker_imagename }}"
-    name: "{{ nova_docker_containername }}_server"
-    volumes_from: "{{ nova_docker_containername }}_data"
+    image: "{{ nova_compute_docker_username }}/{{ nova_compute_docker_imagename }}"
+    name: "{{ nova_compute_docker_containername }}_server"
+    volumes_from: "{{ nova_compute_docker_containername }}_data"
     ports:
       - 6080:6080
       - 6081:6081
