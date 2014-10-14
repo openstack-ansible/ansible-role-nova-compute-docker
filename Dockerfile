@@ -18,4 +18,4 @@ VOLUME [ "/etc/nova", "/var/lib/nova", "/var/run/nova", "/var/lock/nova", \
 
 CMD [ "/usr/bin/supervisord" ]
 
-EXPOSE 9191 9292
+EXPOSE 6080 6081 6082 8773 8774 8775
