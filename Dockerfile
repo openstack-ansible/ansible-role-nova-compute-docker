@@ -1,8 +1,8 @@
 FROM ansible/ubuntu14.04-ansible:stable
 MAINTAINER Mark Stillwell <mark@stillwell.me>
 
-COPY . /var/cache/docker/nova
-WORKDIR /var/cache/docker/nova
+COPY . /var/cache/docker/nova-compute
+WORKDIR /var/cache/docker/nova-compute
 
 # workaround, some kind of versioning problem in nova...
 RUN rm /etc/apt/sources.list.d/proposed.list && apt-get update

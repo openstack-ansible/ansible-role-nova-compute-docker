@@ -30,7 +30,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision "ansible" do |ansible|
     ansible.playbook = "deploy.yml"
     ansible.extra_vars = {
-      nova_dockerized_deployment: true
+      nova_compute_dockerized_deployment: true
     }
   end
 

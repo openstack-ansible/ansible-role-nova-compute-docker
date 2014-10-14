@@ -15,16 +15,6 @@ nova_rabbitmq_nova_password: >
                         '/private/credentials/rabbitmq-nova-password 
                          length=20 
                          chars=ascii_letters,digits') }}
-nova_identity_admin_token: >
-  {{ lookup('password', nova_run_dir + 
-                        '/private/credentials/keystone-admin-token 
-                         length=20 
-                         chars=ascii_letters,digits') }}
-nova_identity_admin_password: >
-  {{ lookup('password', nova_run_dir + 
-                        '/private/credentials/keystone-admin-password 
-                         length=20 
-                         chars=ascii_letters,digits') }}
 nova_identity_nova_password: >
   {{ lookup('password', nova_run_dir + 
                         '/private/credentials/keystone-nova-password 
@@ -37,6 +27,9 @@ nova_mysql_port: 3306
 nova_rabbitmq_host: 127.0.0.1
 nova_rabbitmq_port: 5672
 
+nova_glance_host: 127.0.0.1
+nova_glance_port: 9292
+
 nova_log_dir: /var/log/nova
 nova_log_verbose: true
 nova_log_debug: false
@@ -46,16 +39,8 @@ nova_identity_admin_url: http://{{ nova_identity_endpoint_host }}:35357/v2.0
 nova_identity_internal_url: http://{{ nova_identity_endpoint_host }}:5000/v2.0
 nova_identity_public_url: http://{{ nova_identity_endpoint_host }}:5000/v2.0
 
-nova_compute_endpoint_host: 127.0.0.1
-nova_compute_admin_url: http://{{ nova_compute_endpoint_host }}:8774/v2/%(tenant_id)s
-nova_compute_internal_url: http://{{ nova_compute_endpoint_host }}:8774/v2/%(tenant_id)s
-nova_compute_public_url: http://{{ nova_compute_endpoint_host }}:8774/v2/%(tenant_id)s
-
-nova_identity_region: RegionOne
-nova_identity_demo_password: password
-
 # The variables below only apply to dockerized deployment
-nova_dockerized_deployment: false
-nova_docker_username: default
-nova_docker_imagename: nova-controller
-nova_docker_containername: nova-controller
+nova_compute_dockerized_deployment: false
+nova_compute_docker_username: default
+nova_compute_docker_imagename: nova-controller
+nova_compute_docker_containername: nova-controller
