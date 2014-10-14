@@ -42,7 +42,7 @@
 
     - name: ensure cirros image is registered
       glance_image:
-        auth_url: "{{ keystone_public_url }}"
+        auth_url: "{{ nova_identity_public_url }}"
         login_tenant_name: demo
         login_username: demo
         login_password: "{{ nova_identity_demo_password }}"
@@ -75,7 +75,7 @@
 
     - name: create a new virtual machine instance
       nova_compute:
-        auth_url: "{{ keystone_public_url }}"
+        auth_url: "{{ nova_identity_public_url }}"
         login_tenant_name: demo
         login_username: demo
         login_password: "{{ nova_identity_demo_password }}"
