@@ -38,7 +38,7 @@
     - { section: keystone_authtoken, option: auth_uri, 
         value: "{{ nova_identity_internal_url }}" }
     - { section: keystone_authtoken, option: auth_host, 
-        value: "{{ nova_identity_endpoint_host }}" }
+        value: "{{ nova_identity_host }}" }
     - { section: keystone_authtoken, option: auth_port, value: 35357 }
     - { section: keystone_authtoken, option: auth_protocol, value: http }
     - { section: keystone_authtoken, option: admin_tenant_name, 

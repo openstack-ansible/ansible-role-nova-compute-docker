@@ -55,8 +55,8 @@
           "nova_mysql_port" : "{{ nova_mysql_port }}",
           "nova_mysql_nova_password" :
             "{{ nova_mysql_nova_password }}",
-          "nova_compute_endpoint_host" : "{{ nova_compute_endpoint_host|replace("127.0.0.1", ansible_docker0['ipv4']['address']) }}",
-          "nova_identity_endpoint_host" : "{{ nova_identity_endpoint_host|replace("127.0.0.1", ansible_docker0['ipv4']['address']) }}",
+          "nova_compute_host" : "{{ nova_compute_host|replace("127.0.0.1", ansible_docker0['ipv4']['address']) }}",
+          "nova_identity_host" : "{{ nova_identity_host|replace("127.0.0.1", ansible_docker0['ipv4']['address']) }}",
           "nova_identity_internal_url" : "{{ nova_identity_internal_url|replace("127.0.0.1", ansible_docker0['ipv4']['address']) }}",
           "nova_identity_nova_password" : "{{ nova_identity_nova_password }}",
           "nova_compute_virt_type" : "{{ nova_compute_virt_type }}" }'
