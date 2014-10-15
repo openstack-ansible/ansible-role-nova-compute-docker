@@ -65,6 +65,9 @@ nova_identity_public_url: http://{{ nova_identity_host }}:5000/v2.0
 nova_identity_region: RegionOne
 nova_identity_demo_password: password
 
+nova_network_host: 127.0.0.1
+nova_network_internal_url: http://{{ nova_network_host }}:9696
+
 # The variables below only apply to dockerized deployment
 nova_compute_dockerized_deployment: false
 nova_compute_docker_username: default
