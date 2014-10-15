@@ -52,7 +52,7 @@
         value: "mysql://nova:{{ nova_mysql_nova_password }}@{{ 
                   nova_mysql_host }}:{{ nova_mysql_port }}/nova" }
     - { section: keystone_authtoken, option: auth_uri, 
-        value: "{{ nova_identity_auth_url }}" }
+        value: "{{ nova_identity_admin_url }}" }
     - { section: keystone_authtoken, option: auth_host, 
         value: "{{ nova_identity_host }}" }
     - { section: keystone_authtoken, option: auth_port, value: 35357 }
