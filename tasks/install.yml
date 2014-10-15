@@ -20,7 +20,7 @@
     - neutron-common
     - neutron-plugin-ml2
     - neutron-plugin-openvswitch-agent
-    - openvswitch-agent-datapath-dkms
+    - openvswitch-datapath-dkms
 
 - name: ensure that directories used by nova exist and have correct permissions
   file:
