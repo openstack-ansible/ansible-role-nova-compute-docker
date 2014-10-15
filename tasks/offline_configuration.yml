@@ -103,7 +103,7 @@
     - { section: DEFAULT, option: service_plugins, value: router }
     - { section: DEFAULT, option: allow_overlapping_ips, value: true }
     - { section: keystone_authtoken, option: auth_uri,
-        value: "{{ nova_identity_internal_url }}" }
+        value: "{{ nova_identity_admin_url }}" }
     - { section: keystone_authtoken, option: auth_host,
         value: "{{ nova_identity_host }}" }
     - { section: keystone_authtoken, option: auth_port, value: 35357 }
