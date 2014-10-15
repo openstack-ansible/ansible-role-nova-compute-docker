@@ -35,7 +35,7 @@
     - { section: DEFAULT, 
         option: network_api_class, value: nova.network.neutronv2.api.API }
     - { section: DEFAULT, 
-        option: neutron_url, value: "{{ nova_network_auth_url }}" }
+        option: neutron_url, value: "{{ nova_network_admin_url }}" }
     - { section: DEFAULT, option: neutron_auth_strategy, value: keystone }
     - { section: DEFAULT, option: neutron_admin_tenant_name, value: service }
     - { section: DEFAULT, option: neutron_admin_username, value: neutron }
