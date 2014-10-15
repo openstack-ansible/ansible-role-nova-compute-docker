@@ -1,4 +1,14 @@
 ---
+- name: ensure sysctl is appropriately configured
+  sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    state: present
+  with_items:
+    - { name: net.ipv4.ip_forward, value: 1 }
+    - { name: net.ipv4.conf.all.rp_filter, value: 0 }
+    - { name: net.ipv4.conf.default.rp_filter, value: 0 }
+
 - name: ensure nova compute packages and dependencies are installed
   apt: 
     pkg: "{{ item }}"
@@ -7,6 +17,10 @@
     cache_valid_time: 600
   with_items:
     - "{{ nova_compute_package }}"
+    - neutron-common
+    - neutron-plugin-ml2
+    - neutron-plugin-openvswitch-agent
+    - openvswitch-agent-datapath-dkms
 
 - name: ensure that directories used by nova exist and have correct permissions
   file:
@@ -43,6 +57,12 @@
     enabled: yes
   with_items:
     - nova-compute
+    - openvswitch-switch
+
+- name: ensure that openvswitch integration bridge exists
+  openvswitch_bridge:
+    bridge: br-int
+    state: present
 
 - name: ensure nova compute is properly shut down for dockerized deployments
   service:
@@ -51,4 +71,5 @@
     enabled: yes
   with_items:
     - nova-compute
+    - openvswitch-switch
   when: nova_compute_dockerize_context is defined
