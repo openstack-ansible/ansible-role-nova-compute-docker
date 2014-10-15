@@ -68,8 +68,8 @@
 
     - name: ensure demo user has admin role
       keystone_user:
-        endpoint: "{{ neutron_identity_admin_url }}"
-        token: "{{ neutron_identity_admin_token }}"
+        endpoint: "{{ nova_identity_admin_url }}"
+        token: "{{ nova_identity_admin_token }}"
         tenant: demo
         user: demo
         role: admin
