@@ -35,7 +35,7 @@
     - { section: DEFAULT, 
         option: network_api_class, value: nova.network.neutronv2.api.API }
     - { section: DEFAULT, 
-        option: neutron_url, value: "{{ nova_network_internal_url }}" }
+        option: neutron_url, value: "{{ nova_network_auth_url }}" }
     - { section: DEFAULT, option: neutron_auth_strategy, value: keystone }
     - { section: DEFAULT, option: neutron_admin_tenant_name, value: service }
     - { section: DEFAULT, option: neutron_admin_username, value: neutron }
@@ -52,7 +52,7 @@
         value: "mysql://nova:{{ nova_mysql_nova_password }}@{{ 
                   nova_mysql_host }}:{{ nova_mysql_port }}/nova" }
     - { section: keystone_authtoken, option: auth_uri, 
-        value: "{{ nova_identity_internal_url }}" }
+        value: "{{ nova_identity_auth_url }}" }
     - { section: keystone_authtoken, option: auth_host, 
         value: "{{ nova_identity_host }}" }
     - { section: keystone_authtoken, option: auth_port, value: 35357 }
