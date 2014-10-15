@@ -16,10 +16,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "ubuntu/trusty64"
   config.vm.synced_folder local_cache(config.vm.box), "/var/cache/apt/archives/"
 
-  config.vm.define "network" do |machine|
+  config.vm.define "default" do |machine|
     machine.vm.network :private_network, ip: "10.1.0.2",
                        :netmask => "255.255.0.0"
-    machine.vm.hostname = "network"
     machine.vm.provider :virtualbox do |v|
       v.customize ["modifyvm", :id, "--memory", 2048]
       v.customize ["modifyvm", :id, "--nicpromisc2", "allow-vms"]
