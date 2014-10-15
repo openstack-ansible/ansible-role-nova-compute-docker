@@ -55,7 +55,7 @@ nova_compute_virt_type: qemu
 
 nova_log_dir: /var/log/nova
 nova_log_verbose: true
-nova_log_debug: true
+nova_log_debug: false
 
 nova_identity_host: 127.0.0.1
 nova_identity_admin_url: http://{{ nova_identity_host }}:35357/v2.0

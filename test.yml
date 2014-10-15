@@ -156,6 +156,23 @@
         public_key: "{{ pubkey.stdout }}"
         state: present
 
+    - name: configure default security group to allow ping and ssh
+      neutron_sec_group:
+        auth_url: "{{ nova_identity_public_url }}"
+        login_tenant_name: demo
+        login_username: demo
+        login_password: "{{ identity_demo_password }}"
+        name: default
+        description: description
+        rules:
+          - direction: ingress
+            protocol: icmp
+          - direction: ingress
+            protocol: tcp
+            port_range_min: 22
+            port_range_max: 22
+        state: present
+ 
     - name: create a new virtual machine instance
       nova_compute:
         auth_url: "{{ nova_identity_public_url }}"
@@ -163,6 +180,22 @@
         login_username: demo
         login_password: "{{ identity_demo_password }}"
         name: cirros
-        auto_floating_ip: no
-        image_name: cirros
+        flavor_id: 1
+        image_id: "{{ cirros_image.id }}"
+        nics:
+          - net-id: "{{ internal_network.id }}"
+        key_name: default
+        security_groups: default
+        wait: "yes"
+        state: present
+      register: cirros_instance
+
+    - name: ensure floating ip is associated with vm instance
+      neutron_floating_ip:
+        auth_url: "{{ nova_identity_public_url }}"
+        login_tenant_name: demo
+        login_username: demo
+        login_password: "{{ identity_demo_password }}"
+        instance_name: cirros
+        network_name: "{{ external_network_name }}"
         state: present
