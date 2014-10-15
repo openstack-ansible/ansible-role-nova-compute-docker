@@ -15,6 +15,11 @@ nova_rabbitmq_nova_password: >
                         '/private/credentials/rabbitmq-nova-password 
                          length=20 
                          chars=ascii_letters,digits') }}
+nova_rabbitmq_neutron_password: >
+  {{ lookup('password', nova_run_dir + 
+                        '/private/credentials/rabbitmq-neutron-password 
+                         length=20 
+                         chars=ascii_letters,digits') }}
 nova_identity_admin_token: >
   {{ lookup('password', nova_run_dir +
                         '/private/credentials/keystone-admin-token
@@ -28,6 +33,11 @@ nova_identity_admin_password: >
 nova_identity_nova_password: >
   {{ lookup('password', nova_run_dir + 
                         '/private/credentials/keystone-nova-password 
+                         length=20 
+                         chars=ascii_letters,digits') }}
+nova_identity_neutron_password: >
+  {{ lookup('password', nova_run_dir + 
+                        '/private/credentials/keystone-neutron-password 
                          length=20 
                          chars=ascii_letters,digits') }}
 
