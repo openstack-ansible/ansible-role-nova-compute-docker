@@ -11,7 +11,7 @@
   with_items:
     - { section: DEFAULT, option: verbose, value: "{{ nova_log_verbose }}" }
     - { section: DEFAULT, option: debug, value: "{{ nova_log_debug }}" }
-    - { section: DEFAULT, option: log_dir, value: "{{ nova_log_dir }}" }
+    - { section: DEFAULT, option: log_dir, value: /var/log/nova }
     - { section: DEFAULT, option: rpc_backend, value: rabbit }
     - { section: DEFAULT, option: rabbit_host, 
         value: "{{ nova_rabbitmq_host }}" }

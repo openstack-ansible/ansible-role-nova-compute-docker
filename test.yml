@@ -54,7 +54,7 @@
         login_tenant_name: demo
         login_username: demo
         login_password: "{{ nova_identity_demo_password }}"
-        name: cirros-0.3.2-x86_64
+        name: cirros
         disk_format: qcow2
         copy_from: "{{ cirros_url }}"
         is_public: True
@@ -163,24 +163,6 @@
         login_username: demo
         login_password: "{{ identity_demo_password }}"
         name: cirros
-        flavor_id: 1
-        image_id: "{{ cirros_image.id }}"
-        nics:
-          - net-id: "{{ internal_network.id }}"
-        security_groups: default
-        key_name: default
-        wait: "yes"
+        auto_floating_ip: no
+        image_name: cirros
         state: present
-      register: createvm
-      ignore_errors: yes
-
-    - name: associate a floating ip with the instance
-      neutron_floating_ip:
-        auth_url: "{{ nova_identity_public_url }}"
-        login_tenant_name: demo
-        login_username: demo
-        login_password: "{{ identity_demo_password }}"
-        instance_name: cirros
-        network_name: "{{ external_network_name }}"
-        state: present
-      when: createvm|success
