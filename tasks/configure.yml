@@ -2,6 +2,7 @@
 - name: ensure nova.conf is properly configured
   ini_file:
     dest: /etc/nova/nova.conf
+    group: nova
     mode: 0640
     section: "{{ item.section }}"
     option: "{{ item.option }}"
@@ -66,6 +67,8 @@
 - name: ensure nova-compute.conf is properly configured
   ini_file:
     dest: /etc/nova/nova-compute.conf
+    group: nova
+    mode: 0640
     section: "{{ item.section }}"
     option: "{{ item.option }}"
     value: "{{ item.value }}"
@@ -76,7 +79,8 @@
 - name: ensure neutron.conf is properly configured
   ini_file:
     dest: /etc/neutron/neutron.conf
-    mode: 0600
+    group: neutron
+    mode: 0640
     section: "{{ item.section }}"
     option: "{{ item.option }}"
     value: "{{ item.value }}"
@@ -114,6 +118,8 @@
 - name: ensure ml2_conf.ini is properly configured
   ini_file:
     dest: /etc/neutron/plugins/ml2/ml2_conf.ini
+    group: neutron
+    mode: 0640
     section: "{{ item.section }}"
     option: "{{ item.option }}"
     value: "{{ item.value }}"
@@ -137,7 +143,6 @@
     state: restarted
   with_items:
     - nova-compute
-    - openvswitch-switch
     - neutron-plugin-openvswitch-agent 
   when: (modify_nova_conf|changed or modify_neutron_conf|changed or 
          modify_ml2_ini|changed) and
@@ -150,5 +155,3 @@
   with_items:
     - nova
     - neutron
-
-
