@@ -16,39 +16,20 @@
     update_cache: yes 
     cache_valid_time: 600
   with_items:
-    - "{{ nova_compute_package }}"
+    - "{{ openstack_compute_package }}"
     - neutron-common
     - neutron-plugin-ml2
     - neutron-plugin-openvswitch-agent
-    - openvswitch-datapath-dkms
 
-- name: ensure that directories used by nova exist and have correct permissions
-  file:
-    path: "{{ item }}"
-    owner: nova
-    group: nova
-    mode: 0700
-    state: directory
-  with_items:
-    - /var/run/nova
-    - /var/lock/nova
-
-- name: ensure supervisor is installed for dockerized deployments 
-  apt: 
-    pkg: "{{ item }}"
-    state: latest 
-    update_cache: yes 
-    cache_valid_time: 600
-  with_items:
-    - supervisor
-
-- name: update supervisor configuration from template for dockerized deployments
-  template:
-    src: etc/supervisor/conf.d/supervisord.conf
-    dest: /etc/supervisor/conf.d/supervisord.conf
-    owner: root
-    group: root
-    mode: 0644
+#- name: ensure that directories used by nova exist and have correct permissions
+#  file:
+#    path: "{{ item }}"
+#    group: nova
+#    mode: 0755
+#    state: directory
+#  with_items:
+#    - /var/run/nova
+#    - /var/lock/nova
 
 - name: ensure nova compute is started and enabled
   service: 
@@ -73,3 +54,24 @@
     - nova-compute
     - openvswitch-switch
   when: nova_compute_dockerize_context is defined
+
+- name: ensure supervisor is installed for dockerized deployments 
+  apt: 
+    pkg: "{{ item }}"
+    state: latest 
+    update_cache: yes 
+    cache_valid_time: 600
+  with_items:
+    - supervisor
+  when: nova_compute_dockerize_context is defined
+
+- name: update supervisor configuration from template for dockerized deployments
+  template:
+    src: etc/supervisor/conf.d/supervisord.conf
+    dest: /etc/supervisor/conf.d/supervisord.conf
+    owner: root
+    group: root
+    mode: 0644
+  when: nova_compute_dockerize_context is defined
+
+
