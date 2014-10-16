@@ -4,13 +4,6 @@
   vars:
     cirros_url: http://cdn.download.cirros-cloud.net/0.3.2/cirros-0.3.2-x86_64-disk.img
     openstack_identity_demo_password: password
-    openstack_network_internal_name: demo-net
-    openstack_network_internal_subnet_name: demo-subnet
-    openstack_network_internal_subnet_cidr: 192.168.0.0/24
-    openstack_network_internal_subnet_dns_nameservers: 8.8.8.8
-    openstack_network_internal_subnet_gateway_ip: 192.168.0.1
-    openstack_network_external_name: public
-    openstack_router_name: demo-router
   tasks:
 
     - name: update admin.openrc from template
@@ -87,7 +80,7 @@
         login_username: demo
         login_password: "{{ openstack_identity_demo_password }}"
         tenant_name: demo
-        name: "{{ openstack_network_internal_name }}"
+        name: demo-net
         state: present
       register: openstack_network_internal
 
@@ -98,12 +91,12 @@
         login_username: demo
         login_password: "{{ openstack_identity_demo_password }}"
         tenant_name: demo
-        name: "{{ openstack_network_internal_subnet_name }}"
-        network_name: "{{ openstack_network_internal_name }}"
-        cidr: "{{ openstack_network_internal_subnet_cidr }}"
+        name: demo-subnet
+        network_name: demo-net
+        cidr: 192.168.13.0/24
         enable_dhcp: true
-        gateway_ip: "{{ openstack_network_internal_subnet_gateway_ip }}"
-        dns_nameservers: "{{ openstack_network_internal_subnet_dns_nameservers }}"
+        gateway_ip: 192.168.13.1
+        dns_nameservers: 8.8.8.8
         state: present
 
     - name: ensure router exists
@@ -113,7 +106,7 @@
         login_username: demo
         login_password: "{{ openstack_identity_demo_password }}"
         tenant_name: demo
-        name: "{{ openstack_router_name }}"
+        name: demo-router
         state: present
 
     - name: ensure router has interface connected to internal network
@@ -123,8 +116,8 @@
         login_username: demo
         login_password: "{{ openstack_identity_demo_password }}"
         tenant_name: demo
-        router_name: "{{ openstack_router_name }}"
-        subnet_name: "{{ openstack_network_internal_subnet_name }}"
+        router_name: demo-router
+        subnet_name: demo-subnet
         state: present
 
     - name: ensure router has external network gateway
@@ -133,8 +126,8 @@
         login_tenant_name: demo
         login_username: demo
         login_password: "{{ openstack_identity_demo_password }}"
-        router_name: "{{ openstack_router_name }}"
-        network_name: "{{ openstack_network_external_name }}"
+        router_name: demo-router
+        network_name: public
         state: present
 
     - name: create ssh keypair
@@ -152,7 +145,7 @@
         login_tenant_name: demo
         login_username: demo
         login_password: "{{ openstack_identity_demo_password }}"
-        name: default
+        name: demo-keypair
         public_key: "{{ pubkey.stdout }}"
         state: present
 
@@ -162,9 +155,10 @@
         login_tenant_name: demo
         login_username: demo
         login_password: "{{ openstack_identity_demo_password }}"
-        name: default
+        name: demo-secgroup
         description: description
         rules:
+          - direction: egress
           - direction: ingress
             protocol: icmp
           - direction: ingress
@@ -179,13 +173,13 @@
         login_tenant_name: demo
         login_username: demo
         login_password: "{{ openstack_identity_demo_password }}"
-        name: cirros
+        name: demo-instance
         flavor_id: 1
         image_id: "{{ cirros_image.id }}"
         nics:
           - net-id: "{{ openstack_network_internal.id }}"
-        key_name: default
-        security_groups: default
+        key_name: demo-keypair
+        security_groups: demo-secgroup
         wait: "yes"
         state: present
       register: cirros_instance
@@ -196,6 +190,6 @@
         login_tenant_name: demo
         login_username: demo
         login_password: "{{ openstack_identity_demo_password }}"
-        instance_name: cirros
-        network_name: "{{ openstack_network_external_name }}"
+        instance_name: demo-instance
+        network_name: public
         state: present

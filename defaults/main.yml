@@ -65,7 +65,7 @@ openstack_identity_public_url: http://{{ openstack_identity_endpoint_host }}:500
 openstack_default_region: RegionOne
 
 openstack_network_endpoint_host: 127.0.0.1
-openstack_network_admin_url: http://{{ openstack_network_endpoint_host }}:9696
+openstack_network_internal_url: http://{{ openstack_network_endpoint_host }}:9696
 
 # The variables below only apply to dockerized deployment
 nova_compute_dockerized_deployment: false
