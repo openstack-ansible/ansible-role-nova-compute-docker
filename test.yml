@@ -9,6 +9,7 @@
     openstack_network_internal_subnet_cidr: 192.168.0.0/24
     openstack_network_internal_subnet_dns_nameservers: 8.8.8.8
     openstack_network_internal_subnet_gateway_ip: 192.168.0.1
+    openstack_network_external_name: public
     openstack_router_name: demo-router
   tasks:
 
@@ -112,7 +113,7 @@
         login_username: demo
         login_password: "{{ openstack_identity_demo_password }}"
         tenant_name: demo
-        name: "{{ router_name }}"
+        name: "{{ openstack_router_name }}"
         state: present
 
     - name: ensure router has interface connected to internal network
@@ -122,7 +123,7 @@
         login_username: demo
         login_password: "{{ openstack_identity_demo_password }}"
         tenant_name: demo
-        router_name: "{{ router_name }}"
+        router_name: "{{ openstack_router_name }}"
         subnet_name: "{{ openstack_network_internal_subnet_name }}"
         state: present
 
@@ -132,7 +133,7 @@
         login_tenant_name: demo
         login_username: demo
         login_password: "{{ openstack_identity_demo_password }}"
-        router_name: "{{ router_name }}"
+        router_name: "{{ openstack_router_name }}"
         network_name: "{{ openstack_network_external_name }}"
         state: present
 
