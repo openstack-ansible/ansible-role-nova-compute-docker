@@ -45,6 +45,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.provision "ansible" do |ansible|
     ansible.playbook = "deploy.yml"
+    ansible.extra_vars = {
+      openstack_compute_node_ip: "10.1.0.2"
+    }
   end
 
   config.vm.provision "ansible" do |ansible|
