@@ -193,3 +193,13 @@
         instance_name: demo-instance
         network_name: public
         state: present
+
+    - name: ping demo virtual machine
+      command: ping -c 4 10.1.0.101
+      changed_when: false
+
+    #- name: wait for ssh to become available
+    #  wait_for:
+    #- name: verify that virtual machine can be logged into via ssh
+    #  command: ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no cirros@10.1.0.101 hostname
+    #  changed_when: false
