@@ -47,7 +47,7 @@ openstack_mysql_port: 3306
 openstack_rabbitmq_host: 127.0.0.1
 openstack_rabbitmq_port: 5672
 
-openstack_glance_endpoint_host: 127.0.0.1
+openstack_image_endpoint_host: 127.0.0.1
 
 openstack_compute_package: nova-compute-kvm
 openstack_compute_virt_type: qemu
