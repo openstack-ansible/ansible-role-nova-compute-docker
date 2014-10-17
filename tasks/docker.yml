@@ -54,6 +54,8 @@
           "openstack_compute_node_ip" : "{{ openstack_compute_node_ip }}",
           "openstack_network_internal_url" : 
             "{{ openstack_network_internal_url }}",
+          "openstack_identity_neutron_password" : 
+            "{{ openstack_identity_neutron_password }}",
           "openstack_mysql_host" : "{{ openstack_mysql_host }}",
           "openstack_mysql_port" : "{{ openstack_mysql_port }}",
           "openstack_mysql_nova_password" :
