@@ -37,7 +37,7 @@
   service:
     name: nova-compute
     state: restarted
-  when: nova_user_mod|modified
+  when: nova_user_mod|changed
 
 - name: ensure nova-compute-docker is installed
   pip:
