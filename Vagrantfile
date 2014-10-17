@@ -35,6 +35,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       openstack_identity_endpoint_host: "10.1.0.2",
       openstack_image_endpoint_host: "10.1.0.2",
       openstack_compute_endpoint_host: "10.1.0.2",
+      openstack_vncserver_bind_address: "10.1.0.2",
+      openstack_network_endpoint_host: "10.1.0.2",
       openstack_network_external_name: "public",
       openstack_network_external_device: "eth1",
       openstack_network_external_ip: "10.1.0.2",
@@ -49,7 +51,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision "ansible" do |ansible|
     ansible.playbook = "deploy.yml"
     ansible.extra_vars = {
-      openstack_compute_node_ip: "10.1.0.2"
+      openstack_compute_node_ip: "10.1.0.2",
+      openstack_identity_endpoint_host: "10.1.0.2",
+      openstack_image_endpoint_host: "10.1.0.2",
+      openstack_compute_endpoint_host: "10.1.0.2",
+      openstack_network_endpoint_host: "10.1.0.2"
     }
   end
 
