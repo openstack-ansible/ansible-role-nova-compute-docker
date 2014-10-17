@@ -12,8 +12,6 @@
         option: verbose, value: "{{ openstack_log_verbose }}" }
     - { section: DEFAULT, option: debug, value: "{{ openstack_log_debug }}" }
     - { section: DEFAULT, option: log_dir, value: /var/log/nova }
-    - { section: DEFAULT, 
-        option: compute_driver, value: novadocker.virt.docker.DockerDriver }
     - { section: DEFAULT, option: rpc_backend, value: rabbit }
     - { section: DEFAULT, option: rabbit_host, 
         value: "{{ openstack_rabbitmq_host }}" }
@@ -75,8 +73,8 @@
     option: "{{ item.option }}"
     value: "{{ item.value }}"
   with_items:
-    - { section: libvirt, option: virt_type, 
-        value: "{{ openstack_compute_virt_type }}" }
+    - { section: DEFAULT, 
+        option: compute_driver, value: novadocker.virt.docker.DockerDriver }
  
 - name: ensure neutron.conf is properly configured
   ini_file:

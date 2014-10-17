@@ -41,8 +41,11 @@
 
 - name: ensure nova-compute-docker is installed
   pip:
-    name: git+https://github.com/stackforge/nova-docker#egg=novadocker
+    name: "{{ item }}"
     state: latest
+  with_items:
+    - oslo.rootwrap
+    - git+https://github.com/stackforge/nova-docker#egg=novadocker
 
 - name: update rootwrap docker.filters from template
   template:
