@@ -49,8 +49,10 @@
           "openstack_rabbitmq_port" : "{{ openstack_rabbitmq_port }}",
           "openstack_rabbitmq_nova_password" :
             "{{ openstack_rabbitmq_nova_password }}",
-          "openstack_glance_endpoint_host" : 
-            "{{ openstack_glance_endpoint_host }}",
+          "openstack_image_endpoint_host" : 
+            "{{ openstack_image_endpoint_host }}",
+          "openstack_compute_endpoint_host" : 
+            "{{ openstack_compute_endpoint_host }}",
           "openstack_compute_node_ip" : "{{ openstack_compute_node_ip }}",
           "openstack_network_internal_url" : 
             "{{ openstack_network_internal_url }}",
