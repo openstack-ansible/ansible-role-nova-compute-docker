@@ -22,7 +22,7 @@
         value: "{{ openstack_rabbitmq_nova_password }}" }
     - { section: DEFAULT, option: rabbit_virtual_host, value: /nova }
     - { section: DEFAULT, option: glance_host, 
-        value: "{{ openstack_glance_endpoint_host }}" }
+        value: "{{ openstack_image_endpoint_host }}" }
     - { section: DEFAULT, option: my_ip, 
         value: "{{ openstack_compute_node_ip }}" }
     - { section: DEFAULT, option: vncserver_listen, 

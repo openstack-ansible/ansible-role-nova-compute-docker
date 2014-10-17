@@ -47,7 +47,7 @@ openstack_mysql_port: 3306
 openstack_rabbitmq_host: 127.0.0.1
 openstack_rabbitmq_port: 5672
 
-openstack_glance_endpoint_host: 127.0.0.1
+openstack_image_endpoint_host: 127.0.0.1
 
 openstack_compute_node_ip: 127.0.0.1
 openstack_vncserver_bind_address: "{{ openstack_compute_node_ip }}"
