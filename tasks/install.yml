@@ -16,21 +16,42 @@
     update_cache: yes 
     cache_valid_time: 600
   with_items:
-    - "{{ openstack_compute_package }}"
+    - nova-compute
     - neutron-common
     - neutron-plugin-ml2
     - neutron-plugin-openvswitch-agent
 
-#- name: ensure that directories used by nova exist and have correct permissions
-#  file:
-#    path: "{{ item }}"
-#    group: nova
-#    mode: 0755
-#    state: directory
-#  with_items:
-#    - /var/run/nova
-#    - /var/lock/nova
+- name: ensure that pip is installed
+  shell: curl -s https://bootstrap.pypa.io/get-pip.py | python -
+         creates=/usr/local/bin/pip
 
+- name: ensure nova user is a member of the docker group
+  user:
+    name: nova
+    groups: docker
+    append: yes
+    state: present
+  register: nova_user_mod
+
+- name: restart nova-compute if necessary
+  service:
+    name: nova-compute
+    state: restarted
+  when: nova_user_mod|modified
+
+- name: ensure nova-compute-docker is installed
+  pip:
+    name: git+https://github.com/stackforge/nova-docker#egg=novadocker
+    state: latest
+
+- name: update rootwrap docker.filters from template
+  template:
+    owner: root
+    group: root
+    mode: 0755
+    src: etc/nova/rootwrap.d/docker.filters
+    dest: /etc/nova/rootwrap.d/docker.filters
+    
 - name: ensure nova compute is started and enabled
   service: 
     name: "{{ item }}"

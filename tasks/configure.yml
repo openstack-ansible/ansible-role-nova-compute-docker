@@ -12,6 +12,8 @@
         option: verbose, value: "{{ openstack_log_verbose }}" }
     - { section: DEFAULT, option: debug, value: "{{ openstack_log_debug }}" }
     - { section: DEFAULT, option: log_dir, value: /var/log/nova }
+    - { section: DEFAULT, 
+        option: compute_driver, value: novadocker.virt.docker.DockerDriver }
     - { section: DEFAULT, option: rpc_backend, value: rabbit }
     - { section: DEFAULT, option: rabbit_host, 
         value: "{{ openstack_rabbitmq_host }}" }
