@@ -45,7 +45,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       ansible.playbook = "provisioning/prep.yml"
       ansible.extra_vars = {
         mariadb_bind_address: "0.0.0.0",
-        openstack_network_node_ip: "10.2.0.2",
+        openstack_network_node_ip: "10.1.0.2",
         openstack_network_external_device: "eth2",
         openstack_network_external_ip: "10.2.0.2",
         openstack_network_external_netmask: 16,
