@@ -67,7 +67,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     machine.vm.provision "ansible" do |ansible|
       ansible.playbook = "provisioning/test.yml"
       ansible.extra_vars = {
-        openstack_network_external_allocation_pool_start: 10.2.0.100
+        openstack_network_external_allocation_pool_start: "10.2.0.100"
       }
       ansible.limit = 'all'
     end
