@@ -1,11 +1,11 @@
 ---
-- hosts: all
+- hosts: compute
   gather_facts: True
   sudo: True
   roles:
     - { role: marklee77.docker, when: nova_compute_dockerized_deployment }
 
-- hosts: all
+- hosts: controller
   gather_facts: True
   sudo: True
   roles:
