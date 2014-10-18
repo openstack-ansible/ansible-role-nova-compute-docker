@@ -32,7 +32,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     machine.vm.network :private_network, ip: "10.2.0.2",
                        :netmask => "255.255.0.0"
     machine.vm.provider :virtualbox do |v|
-      v.customize ["modifyvm", :id, "--memory", 1280]
+      v.customize ["modifyvm", :id, "--memory", 2048]
       v.customize ["modifyvm", :id, "--nicpromisc3", "allow-vms"]
     end
 
