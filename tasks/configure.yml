@@ -1,4 +1,6 @@
 ---
+# FIXME: my_ip should always be an ip address, so do lookup in case it's a
+# host...
 - name: ensure nova.conf is properly configured
   ini_file:
     dest: /etc/nova/nova.conf
@@ -30,7 +32,7 @@
     - { section: DEFAULT, option: vncserver_proxyclient_address, 
         value: "{{ openstack_compute_node_ip }}" }
     - { section: DEFAULT, option: novncproxy_base_url,
-        value: "http://{{ openstack_compute_node_ip }}:6080/vnc_auto.html" }
+        value: "http://{{ openstack_compute_endpoint_host }}:6080/vnc_auto.html" }
     - { section: DEFAULT, option: auth_strategy, value: keystone }
     - { section: DEFAULT, 
         option: network_api_class, value: nova.network.neutronv2.api.API }
