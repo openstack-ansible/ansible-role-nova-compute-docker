@@ -49,6 +49,8 @@
           "openstack_rabbitmq_port" : "{{ openstack_rabbitmq_port }}",
           "openstack_rabbitmq_nova_password" :
             "{{ openstack_rabbitmq_nova_password }}",
+          "openstack_rabbitmq_neutron_password" :
+            "{{ openstack_rabbitmq_neutron_password }}",
           "openstack_image_endpoint_host" : 
             "{{ openstack_image_endpoint_host }}",
           "openstack_compute_endpoint_host" : 
