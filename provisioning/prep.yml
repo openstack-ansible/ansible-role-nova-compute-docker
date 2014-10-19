@@ -1,22 +1,4 @@
 ---
-- hosts: compute
-  gather_facts: True
-  sudo: True
-  roles:
-    - { role: marklee77.docker, when: nova_compute_dockerized_deployment }
-
-- hosts: controller
-  gather_facts: True
-  sudo: True
-  roles:
-    - marklee77.mariadb
-    - marklee77.rabbitmq-server
-    - marklee77.keystone
-    - marklee77.glance
-    - marklee77.nova-controller
-    - marklee77.neutron-controller
-    - marklee77.neutron-network
-
 - hosts: all
   gather_facts: True
   sudo: True
@@ -34,3 +16,21 @@
         - python-glanceclient
         - python-novaclient
         - python-neutronclient
+
+- hosts: controller
+  gather_facts: True
+  sudo: True
+  roles:
+    - marklee77.mariadb
+    - marklee77.rabbitmq-server
+    - marklee77.keystone
+    - marklee77.glance
+    - marklee77.nova-controller
+    - marklee77.neutron-controller
+    - marklee77.neutron-network
+
+- hosts: compute
+  gather_facts: True
+  sudo: True
+  roles:
+    - marklee77.docker
