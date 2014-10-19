@@ -96,7 +96,7 @@
     name: "{{ nova_compute_docker_containername }}_server"
     volumes_from: "{{ nova_compute_docker_containername }}_data"
     privileged: yes
-    mode: host
+    net: host
     detach: yes
     state: running
 
