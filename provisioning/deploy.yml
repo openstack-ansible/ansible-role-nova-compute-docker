@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: compute
   sudo: True
   roles:
     - marklee77.nova-compute

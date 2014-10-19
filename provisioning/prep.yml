@@ -1,11 +1,16 @@
 ---
-- hosts: all
+- hosts: compute
+  gather_facts: True
+  sudo: True
+  roles:
+    - { role: marklee77.docker, when: nova_compute_dockerized_deployment }
+
+- hosts: controller
   gather_facts: True
   sudo: True
   roles:
     - marklee77.mariadb
     - marklee77.rabbitmq-server
-    - marklee77.docker
     - marklee77.keystone
     - marklee77.glance
     - marklee77.nova-controller

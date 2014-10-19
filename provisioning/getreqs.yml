@@ -7,13 +7,13 @@
     - name: check out docker role from github.com
       git:
         repo: 'https://github.com/marklee77/ansible-role-docker.git'
-        dest: roles/marklee77.docker
+        dest: ../roles/marklee77.docker
         update: yes
 
     - name: check out roles needed for demo deployment from github.com
       git:
         repo: 'https://github.com/marklee77/ansible-role-{{ item }}.git'
-        dest: roles/marklee77.{{ item }}
+        dest: ../roles/marklee77.{{ item }}
         update: yes
       with_items:
         - mariadb
