@@ -95,6 +95,8 @@
     image: "{{ nova_compute_docker_username }}/{{ nova_compute_docker_imagename }}"
     name: "{{ nova_compute_docker_containername }}_server"
     volumes_from: "{{ nova_compute_docker_containername }}_data"
+    volumes:
+      - /lib/modules:/lib/modules
     privileged: yes
     net: host
     detach: yes

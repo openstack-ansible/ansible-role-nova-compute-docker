@@ -15,6 +15,7 @@ RUN ansible-playbook -i inventories/local.ini provisioning/install.yml
 RUN chmod 755 ./startcontainer.sh
 
 VOLUME [ "/etc/nova", "/var/lib/nova", "/var/log/nova", \
+         "/etc/neutron", "/var/lib/neutron", "/var/log/neutron", \
          "/var/log/openvswitch", "/var/log/supervisor" ]
 
 CMD [ "./startcontainer.sh" ]
