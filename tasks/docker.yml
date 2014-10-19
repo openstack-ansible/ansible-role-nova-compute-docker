@@ -58,17 +58,15 @@
             "{{ openstack_network_internal_url }}",
           "openstack_identity_neutron_password" : 
             "{{ openstack_identity_neutron_password }}",
+           "openstack_identity_internal_url" : 
+            "{{ openstack_identity_internal_url }}",
           "openstack_mysql_host" : "{{ openstack_mysql_host }}",
           "openstack_mysql_port" : "{{ openstack_mysql_port }}",
           "openstack_mysql_nova_password" :
             "{{ openstack_mysql_nova_password }}",
-          "openstack_compute_endpoint_host" : 
-            "{{ openstack_compute_endpoint_host }}",
           "openstack_identity_endpoint_host" : 
             "{{ openstack_identity_endpoint_host }}",
-          "openstack_identity_internal_url" : 
-            "{{ openstack_identity_internal_url }}",
-          "openstack_identity_nova_password" : 
+         "openstack_identity_nova_password" : 
             "{{ openstack_identity_nova_password }}",
           "openstack_compute_virt_type" : "{{ openstack_compute_virt_type }}" }'
     detach: no

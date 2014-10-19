@@ -46,6 +46,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     machine.vm.provision "ansible" do |ansible|
       ansible.playbook = "provisioning/prep.yml"
       ansible.extra_vars = {
+        nova_compute_dockerized_deployment: true,
         mariadb_bind_address: "0.0.0.0",
         openstack_network_node_ip: "{{ ansible_eth1.ipv4.address }}",
         openstack_network_external_device: "eth2",
@@ -65,6 +66,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     machine.vm.provision "ansible" do |ansible|
       ansible.playbook = "provisioning/deploy.yml"
       ansible.extra_vars = {
+        nova_compute_dockerized_deployment: true,
         openstack_compute_node_ip: "{{ ansible_eth1.ipv4.address }}"
       }
       ansible.groups = {
