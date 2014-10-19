@@ -76,5 +76,5 @@ openstack_default_region: RegionOne
 # The variables below only apply to dockerized deployment
 nova_compute_dockerized_deployment: false
 nova_compute_docker_username: default
-nova_compute_docker_imagename: nova-controller
-nova_compute_docker_containername: nova-controller
+nova_compute_docker_imagename: nova-compute
+nova_compute_docker_containername: nova-compute

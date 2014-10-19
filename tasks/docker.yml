@@ -22,13 +22,13 @@
     owner: "{{ ansible_ssh_user }}"
     state: directory
   with_items:
-    - "{{ ansible_env.PWD }}/.ansible_cache/docker/nova-compute/playbooks/group_vars"
+    - "{{ ansible_env.PWD }}/.ansible_cache/docker/nova-compute/provisioning/group_vars"
 
 - name: update configuration used to build docker image from template
   template:
-    src: ansible_cache/docker/nova-compute/playbooks/group_vars/all.yml
+    src: ansible_cache/docker/nova-compute/provisioning/group_vars/all.yml
     owner: "{{ ansible_ssh_user }}"
-    dest: "{{ ansible_env.PWD }}/.ansible_cache/docker/nova-compute/playbooks/group_vars/all.yml"
+    dest: "{{ ansible_env.PWD }}/.ansible_cache/docker/nova-compute/provisioning/group_vars/all.yml"
 
 - name: ensure nova docker image has been built
   docker_image:
@@ -42,13 +42,15 @@
     name: "{{ nova_compute_docker_containername }}_data"
     command: >
       ansible-playbook 
-        -i inventories/local.ini playbooks/configure.yml -e '{ 
+        -i inventories/local.ini provisioning/configure.yml -e '{ 
           "openstack_log_verbose" : "{{ openstack_log_verbose }}",
           "openstack_log_debug" : "{{ openstack_log_debug }}",
           "openstack_rabbitmq_host" : "{{ openstack_rabbitmq_host }}",
           "openstack_rabbitmq_port" : "{{ openstack_rabbitmq_port }}",
           "openstack_rabbitmq_nova_password" :
             "{{ openstack_rabbitmq_nova_password }}",
+          "openstack_rabbitmq_neutron_password" :
+            "{{ openstack_rabbitmq_neutron_password }}",
           "openstack_image_endpoint_host" : 
             "{{ openstack_image_endpoint_host }}",
           "openstack_compute_endpoint_host" : 
@@ -58,17 +60,15 @@
             "{{ openstack_network_internal_url }}",
           "openstack_identity_neutron_password" : 
             "{{ openstack_identity_neutron_password }}",
+           "openstack_identity_internal_url" : 
+            "{{ openstack_identity_internal_url }}",
           "openstack_mysql_host" : "{{ openstack_mysql_host }}",
           "openstack_mysql_port" : "{{ openstack_mysql_port }}",
           "openstack_mysql_nova_password" :
             "{{ openstack_mysql_nova_password }}",
-          "openstack_compute_endpoint_host" : 
-            "{{ openstack_compute_endpoint_host }}",
           "openstack_identity_endpoint_host" : 
             "{{ openstack_identity_endpoint_host }}",
-          "openstack_identity_internal_url" : 
-            "{{ openstack_identity_internal_url }}",
-          "openstack_identity_nova_password" : 
+         "openstack_identity_nova_password" : 
             "{{ openstack_identity_nova_password }}",
           "openstack_compute_virt_type" : "{{ openstack_compute_virt_type }}" }'
     detach: no
@@ -97,14 +97,10 @@
     image: "{{ nova_compute_docker_username }}/{{ nova_compute_docker_imagename }}"
     name: "{{ nova_compute_docker_containername }}_server"
     volumes_from: "{{ nova_compute_docker_containername }}_data"
-    ports:
-      - 6080:6080
-      - 6081:6081
-      - 6082:6082
-      - 8773:8773
-      - 8774:8774
-      - 8775:8775
+    volumes:
+      - /lib/modules:/lib/modules
     privileged: yes
+    net: host
     detach: yes
     state: running
 
