@@ -1,0 +1,3 @@
+https://ask.openstack.org/en/question/49874/nova-docker-issue-import-error-no-module-named-i18n/
+
+git checkout -b pre-i18n 9045ca43b645e72751099491bf5f4f9e4bddbb91

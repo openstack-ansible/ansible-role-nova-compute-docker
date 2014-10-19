@@ -39,13 +39,13 @@
     state: restarted
   when: nova_user_mod|changed
 
-- name: ensure nova-compute-docker is installed
-  pip:
-    name: "{{ item }}"
-    state: latest
-  with_items:
-    - oslo.rootwrap
-    - git+https://github.com/stackforge/nova-docker#egg=novadocker
+#- name: ensure nova-compute-docker is installed
+#  pip:
+#    name: "{{ item }}"
+#    state: latest
+#  with_items:
+#    - oslo.rootwrap
+#    - git+https://github.com/stackforge/nova-docker#egg=novadocker
 
 - name: update rootwrap docker.filters from template
   template:

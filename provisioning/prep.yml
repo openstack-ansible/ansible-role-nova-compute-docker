@@ -17,6 +17,12 @@
         - python-novaclient
         - python-neutronclient
 
+- hosts: all
+  gather_facts: True
+  sudo: True
+  roles:
+    - marklee77.docker
+
 - hosts: controller
   gather_facts: True
   sudo: True
@@ -29,8 +35,3 @@
     - marklee77.neutron-controller
     - marklee77.neutron-network
 
-- hosts: compute
-  gather_facts: True
-  sudo: True
-  roles:
-    - marklee77.docker
