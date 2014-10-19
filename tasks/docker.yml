@@ -95,9 +95,8 @@
     image: "{{ nova_compute_docker_username }}/{{ nova_compute_docker_imagename }}"
     name: "{{ nova_compute_docker_containername }}_server"
     volumes_from: "{{ nova_compute_docker_containername }}_data"
-    ports:
-      - 6080:6080
     privileged: yes
+    mode: host
     detach: yes
     state: running
 

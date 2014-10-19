@@ -12,10 +12,9 @@ RUN if [ ! -f provisioning/group_vars/all.yml ]; then \
       ln -s ../../defaults/main.yml provisioning/group_vars/all.yml;\
     fi
 RUN ansible-playbook -i inventories/local.ini provisioning/install.yml
+RUN chmod 755 ./startcontainer.sh
 
 VOLUME [ "/etc/nova", "/var/lib/nova", "/var/log/nova", \
          "/var/log/supervisor" ]
 
-CMD [ "/usr/bin/supervisord" ]
-
-EXPOSE 6080
+CMD [ "./startcontainer.sh" ]
