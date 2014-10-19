@@ -4,7 +4,9 @@
 - /.gitignore
 - /.vagrant
 - /private
-- /provisioning/library
+- /library
 - /roles
+- /provisioning/library
+- /provisioning/roles
 - /templates/*.openrc
 - /templates/ansible_cache

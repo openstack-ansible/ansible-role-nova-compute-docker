@@ -1,6 +1,7 @@
 .vagrant
 library/*
 private
-provisioning/library
+library/*
+!library/docker
 roles/*
 !roles/marklee77.nova-compute
