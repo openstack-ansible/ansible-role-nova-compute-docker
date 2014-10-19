@@ -45,7 +45,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       ansible.playbook = "provisioning/prep.yml"
       ansible.extra_vars = {
         mariadb_bind_address: "0.0.0.0",
-        openstack_network_node_ip: "10.1.0.2",
+        openstack_network_node_ip: "{{ ansible_eth1.ipv4.address }}"
         openstack_network_external_device: "eth2",
         openstack_network_external_ip: "10.2.0.2",
         openstack_network_external_netmask: 16,
@@ -59,6 +59,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     machine.vm.provision "ansible" do |ansible|
       ansible.playbook = "provisioning/deploy.yml"
+      ansible.extra_vars = {
+        openstack_network_node_ip: "{{ ansible_eth1.ipv4.address }}"
+      }
       ansible.groups = {
         "compute" => ["compute-001"]
       }
