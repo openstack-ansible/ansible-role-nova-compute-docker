@@ -13,6 +13,4 @@ ovs-vswitchd unix:/var/run/openvswitch/db.sock -vconsole:emer -vsyslog:err \
     --log-file=/var/log/openvswitch/ovs-vswitchd.log \
     --pidfile=/var/run/openvswitch/ovs-vswitchd.pid --detach --monitor
 ovs-vsctl -- --may-exist add-br br-int -- set bridge br0 datapath_type=netdev
-iptables -A INPUT -i eth0 -j DROP
-iptables -A FORWARD -i eth0 -j DROP
 /usr/bin/supervisord
