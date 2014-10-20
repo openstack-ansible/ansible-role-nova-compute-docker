@@ -26,6 +26,16 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
   end
 
+  config.vm.define "compute-002" do |machine|
+    machine.vm.box = "ubuntu/trusty64"
+    machine.vm.hostname = "compute-002"
+    machine.vm.network :private_network, ip: "10.1.0.4",
+                       :netmask => "255.255.0.0"
+    machine.vm.provider :virtualbox do |v|
+      v.customize ["modifyvm", :id, "--memory", 1280]
+    end
+  end
+
   config.vm.define "controller" do |machine|
     machine.vm.box = "ubuntu/trusty64"
     machine.vm.hostname = "controller"
@@ -70,7 +80,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         openstack_compute_node_ip: "{{ ansible_eth1.ipv4.address }}"
       }
       ansible.groups = {
-        "compute" => ["compute-001"]
+        "compute" => ["compute-001", "compute-002"]
       }
       ansible.limit = 'all'
     end
