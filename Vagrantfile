@@ -68,7 +68,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         openstack_network_external_allocation_pool_end: "10.2.0.200"
       }
       ansible.groups = {
-        "compute" => ["compute-001"]
+        "compute" => ["compute-001", "compute-002"]
       }
       ansible.limit = 'all'
     end
