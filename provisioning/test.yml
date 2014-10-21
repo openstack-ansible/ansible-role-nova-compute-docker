@@ -2,8 +2,8 @@
 - hosts: all
   sudo: True
   tasks:
-    - command: docker pull cirros
-      register: docker_pull_cirros
+    - command: docker pull marklee77/cirros
+      register: docker_pull_marklee77/cirros
       changed_when: not docker_pull_cirros.stdout.find("Image is up to date")
 
 - hosts: controller
