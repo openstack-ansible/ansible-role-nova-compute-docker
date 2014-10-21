@@ -11,6 +11,7 @@ RUN if [ ! -f provisioning/group_vars/all.yml ]; then \
       mkdir -p provisioning/group_vars;\
       ln -s ../../defaults/main.yml provisioning/group_vars/all.yml;\
     fi
+RUN curl -sSL https://get.docker.com/ubuntu/ | sudo sh 
 RUN ansible-playbook -i inventories/local.ini provisioning/install.yml
 RUN chmod 755 ./startcontainer.sh
 
