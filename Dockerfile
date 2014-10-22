@@ -18,6 +18,7 @@ RUN apt-get -y install curl && curl -sSL https://get.docker.com/ubuntu/ | sudo s
 RUN ansible-playbook -i inventories/local.ini provisioning/install.yml
 RUN chmod 755 ./startcontainer.sh
 
+# FIXME: add libvirtd and openvswitch configs and logs
 VOLUME [ "/etc/nova", "/var/lib/nova", "/var/log/nova", \
          "/etc/neutron", "/var/lib/neutron", "/var/log/neutron", \
          "/var/run/docker", "/var/lib/docker", "/var/log/docker", \
