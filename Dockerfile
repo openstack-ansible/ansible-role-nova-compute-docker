@@ -17,6 +17,7 @@ RUN chmod 755 ./startcontainer.sh
 
 VOLUME [ "/etc/nova", "/var/lib/nova", "/var/log/nova", \
          "/etc/neutron", "/var/lib/neutron", "/var/log/neutron", \
+         "/var/lib/docker", \
          "/var/log/openvswitch", "/var/log/supervisor" ]
 
 CMD [ "./startcontainer.sh" ]

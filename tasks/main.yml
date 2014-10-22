@@ -7,21 +7,3 @@
 
 - include: configure.yml
   when: not nova_compute_dockerized_deployment 
-
-#- service:
-#    name: "{{ item }}"
-#    state: restarted 
-#  with_items:
-#    - neutron-server
-#    - neutron-plugin-openvswitch-agent
-#    - neutron-l3-agent
-#    - neutron-dhcp-agent
-#    - neutron-metadata-agent
-#    - nova-compute 
-#    - nova-api
-#    - nova-cert
-#    - nova-consoleauth
-#    - nova-scheduler
-#    - nova-conductor
-#    - nova-novncproxy
- 
