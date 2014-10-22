@@ -15,7 +15,7 @@ RUN apt-get -y install curl && curl -sSL https://get.docker.com/ubuntu/ | sudo s
     mkdir -p /var/run/docker /var/log/docker && \
     echo "DOCKER_OPTS=\"--host=unix:///var/run/docker/docker.sock --mtu=1454\"" > /etc/default/docker && \
     echo "DOCKER_LOGFILE=/var/log/docker/docker.log" >> /etc/default/docker && \
-    ln -sf docker/docker.sock docker.sock
+    ln -sf docker/docker.sock /var/run/docker.sock
 RUN ansible-playbook -i inventories/local.ini provisioning/install.yml
 RUN chmod 755 ./startcontainer.sh
 
