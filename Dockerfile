@@ -11,12 +11,16 @@ RUN if [ ! -f provisioning/group_vars/all.yml ]; then \
       mkdir -p provisioning/group_vars;\
       ln -s ../../defaults/main.yml provisioning/group_vars/all.yml;\
     fi
-RUN apt-get -y install curl && curl -sSL https://get.docker.com/ubuntu/ | sudo sh 
+RUN apt-get -y install curl && curl -sSL https://get.docker.com/ubuntu/ | sudo sh && \
+    mkdir -p /var/run/docker /var/log/docker && \
+    echo "DOCKER_OPTS=--host=unix:///var/run/docker/docker.sock" > /etc/default/docker && \
+    echo "DOCKER_LOGFILE=/var/log/docker/docker.log" >> /etc/default/docker 
 RUN ansible-playbook -i inventories/local.ini provisioning/install.yml
 RUN chmod 755 ./startcontainer.sh
 
 VOLUME [ "/etc/nova", "/var/lib/nova", "/var/log/nova", \
          "/etc/neutron", "/var/lib/neutron", "/var/log/neutron", \
-         "/var/lib/docker", "/var/log" ]
+         "/var/run/docker", "/var/lib/docker", "/var/log/docker", \
+         "/etc/supervisor", "/var/log/supervisor" ]
 
 CMD [ "./startcontainer.sh" ]
