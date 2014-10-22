@@ -34,7 +34,7 @@
     name: "{{ item }}"
     state: latest
   with_items:
-    - git+https://github.com/marklee77/nova-docker@fix-mtu
+    - git+https://github.com/marklee77/nova-docker@fix-mtu#egg=novadocker
 
 #   - git+https://github.com/stackforge/nova-docker@9045ca43b645e72751099491bf5f4f9e4bddbb91#egg=novadocker
 
