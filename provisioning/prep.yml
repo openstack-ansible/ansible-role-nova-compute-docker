@@ -34,3 +34,4 @@
         - python-glanceclient
         - python-novaclient
         - python-neutronclient
+      when: ansible_distribution == "Ubuntu"

@@ -33,8 +33,10 @@
     - { section: DEFAULT, option: debug, value: "{{ openstack_log_debug }}" }
     - { section: DEFAULT, option: log_dir, value: /var/log/nova }
     - { section: DEFAULT, option: rpc_backend, value: rabbit }
-    - { section: DEFAULT, option: rabbit_host, 
-        value: "{{ openstack_rabbitmq_host }}" }
+    - { section: DEFAULT, 
+        option: rabbit_host, value: "{{ openstack_rabbitmq_host }}" }
+    - { section: DEFAULT, 
+        option: rabbit_hosts, value: "{{ openstack_rabbitmq_host }}" }
     - { section: DEFAULT, option: rabbit_port, 
         value: "{{ openstack_rabbitmq_port }}" }
     - { section: DEFAULT, option: rabbit_userid, value: nova }
@@ -113,6 +115,8 @@
     - { section: DEFAULT,
         option: rabbit_host, value: "{{ openstack_rabbitmq_host }}" }
     - { section: DEFAULT,
+        option: rabbit_hosts, value: "{{ openstack_rabbitmq_host }}" }
+    - { section: DEFAULT,
         option: rabbit_port, value: "{{ openstack_rabbitmq_port }}" }
     - { section: DEFAULT, option: rabbit_userid, value: neutron }
     - { section: DEFAULT, option: rabbit_password,
@@ -174,4 +178,3 @@
   with_items:
     - nova
     - neutron
-

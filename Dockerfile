@@ -11,7 +11,7 @@ RUN if [ ! -f provisioning/group_vars/all.yml ]; then \
       mkdir -p provisioning/group_vars;\
       ln -s ../../defaults/main.yml provisioning/group_vars/all.yml;\
     fi
-RUN ansible-playbook -i inventories/local.ini provisioning/install.yml
+RUN ansible-playbook -i inventories/local.ini provisioning/install-ubuntu-trusty.yml
 RUN chmod 755 ./startcontainer.sh
 
 VOLUME [ "/etc/nova", "/var/lib/nova", "/var/log/nova", \
