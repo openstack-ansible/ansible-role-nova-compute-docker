@@ -1,0 +1,62 @@
+---
+- name: ensure basic yum requirements are installed and up to date
+  yum:
+    name: "{{ item  }}"
+    state: latest
+  with_items:
+    - ca-certificates
+    - epel-release
+    - yum-plugin-priorities
+
+- name: ensure the openstack rdo repository is enabled
+  yum:
+    name: http://repos.fedorapeople.org/repos/openstack/openstack-icehouse/rdo-release-icehouse-3.noarch.rpm
+    state: present
+
+- name: ensure basic openstack pages are installed and up to date
+  yum:
+    name: "{{ item  }}"
+    state: latest
+  with_items:
+    - openstack-selinux
+    - openstack-utils
+  
+- name: ensure nova compute packages and dependencies are installed
+  yum: 
+    name: "{{ item }}"
+    state: latest 
+  with_items:
+    - openstack-neutron-ml2
+    - openstack-neutron-openvswitch
+    - openstack-nova-compute
+
+- name: ensure that required link to ml2_conf.ini exists
+  file: 
+    src: /etc/neutron/plugins/ml2/ml2_conf.ini
+    dest: /etc/neutron/plugin.ini
+    state: link
+
+- name: patch /etc/init.d/neutron-openvswitch-agent to reference plugin.ini
+  replace:
+    dest: /etc/init.d/neutron-openvswitch-agent
+    regexp: plugins/openvswitch/ovs_neutron_plugin.ini
+    replace: plugin.ini
+  register: patch_neutron_openvswitch_agent
+
+- name: restart neutron-openvswitch-agent if necessary
+  service:
+    name: neutron-openvswitch-agent
+    state: restarted
+  when: patch_neutron_openvswitch_agent|changed
+
+- name: ensure nova services required by nova compute are started and enabled
+  service: 
+    name: "{{ item }}"
+    state: started 
+    enabled: yes
+  with_items:
+    - libvirtd
+    - messagebus
+    - neutron-openvswitch-agent
+    - openstack-nova-compute
+    - openvswitch
