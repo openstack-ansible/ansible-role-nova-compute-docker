@@ -47,6 +47,7 @@
         value: "{{ openstack_image_endpoint_host }}" }
     - { section: DEFAULT, option: my_ip, 
         value: "{{ openstack_compute_node_ip }}" }
+    - { section: DEFAULT, option: vnc_enabled, value: true }
     - { section: DEFAULT, option: vncserver_listen, 
         value: "{{ openstack_vncserver_bind_address }}" }
     - { section: DEFAULT, option: vncserver_proxyclient_address, 
@@ -73,14 +74,13 @@
     - { section: database, option: connection,
         value: "mysql://nova:{{ openstack_mysql_nova_password }}@{{ 
                   openstack_mysql_host }}:{{ openstack_mysql_port }}/nova" }
-    - { section: keystone_authtoken, option: auth_uri, 
-        value: "{{ openstack_identity_internal_url }}" }
+    - { section: keystone_authtoken, 
+        option: auth_uri, value: "{{ openstack_identity_internal_url }}" }
     - { section: keystone_authtoken, option: auth_host, 
         value: "{{ openstack_identity_endpoint_host }}" }
     - { section: keystone_authtoken, option: auth_port, value: 35357 }
     - { section: keystone_authtoken, option: auth_protocol, value: http }
-    - { section: keystone_authtoken, option: admin_tenant_name, 
-        value: service }
+    - { section: keystone_authtoken, option: admin_tenant_name, value: service }
     - { section: keystone_authtoken, option: admin_user, value: nova }
     - { section: keystone_authtoken, option: admin_password, 
         value: "{{ openstack_identity_nova_password }}" }
@@ -95,8 +95,8 @@
     option: "{{ item.option }}"
     value: "{{ item.value }}"
   with_items:
-    - { section: libvirt, option: virt_type, 
-        value: "{{ openstack_compute_virt_type }}" }
+    - { section: libvirt, 
+        option: virt_type, value: "{{ openstack_compute_virt_type }}" }
  
 - name: ensure neutron.conf is properly configured
   ini_file:
@@ -152,8 +152,8 @@
     - { section: ml2, option: tenant_network_types, value: gre }
     - { section: ml2, option: mechanism_drivers, value: openvswitch }
     - { section: ml2_type_gre, option: tunnel_id_ranges, value: "1:1000" }
-    - { section: ovs, option: local_ip,
-        value: "{{ openstack_compute_node_ip }}" }
+    - { section: ovs, 
+        option: local_ip, value: "{{ openstack_compute_node_ip }}" }
     - { section: ovs, option: tunnel_type, value: gre }
     - { section: ovs, option: enable_tunneling, value: true }
     - { section: securitygroup, option: firewall_driver,
@@ -178,3 +178,4 @@
   with_items:
     - nova
     - neutron
+
