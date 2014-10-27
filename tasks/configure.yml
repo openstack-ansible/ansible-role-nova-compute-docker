@@ -33,8 +33,10 @@
     - { section: DEFAULT, option: debug, value: "{{ openstack_log_debug }}" }
     - { section: DEFAULT, option: log_dir, value: /var/log/nova }
     - { section: DEFAULT, option: rpc_backend, value: rabbit }
-    - { section: DEFAULT, option: rabbit_host, 
-        value: "{{ openstack_rabbitmq_host }}" }
+    - { section: DEFAULT, 
+        option: rabbit_host, value: "{{ openstack_rabbitmq_host }}" }
+    - { section: DEFAULT, 
+        option: rabbit_hosts, value: "{{ openstack_rabbitmq_host }}" }
     - { section: DEFAULT, option: rabbit_port, 
         value: "{{ openstack_rabbitmq_port }}" }
     - { section: DEFAULT, option: rabbit_userid, value: nova }
@@ -45,6 +47,7 @@
         value: "{{ openstack_image_endpoint_host }}" }
     - { section: DEFAULT, option: my_ip, 
         value: "{{ openstack_compute_node_ip }}" }
+    - { section: DEFAULT, option: vnc_enabled, value: true }
     - { section: DEFAULT, option: vncserver_listen, 
         value: "{{ openstack_vncserver_bind_address }}" }
     - { section: DEFAULT, option: vncserver_proxyclient_address, 
@@ -71,14 +74,13 @@
     - { section: database, option: connection,
         value: "mysql://nova:{{ openstack_mysql_nova_password }}@{{ 
                   openstack_mysql_host }}:{{ openstack_mysql_port }}/nova" }
-    - { section: keystone_authtoken, option: auth_uri, 
-        value: "{{ openstack_identity_internal_url }}" }
+    - { section: keystone_authtoken, 
+        option: auth_uri, value: "{{ openstack_identity_internal_url }}" }
     - { section: keystone_authtoken, option: auth_host, 
         value: "{{ openstack_identity_endpoint_host }}" }
     - { section: keystone_authtoken, option: auth_port, value: 35357 }
     - { section: keystone_authtoken, option: auth_protocol, value: http }
-    - { section: keystone_authtoken, option: admin_tenant_name, 
-        value: service }
+    - { section: keystone_authtoken, option: admin_tenant_name, value: service }
     - { section: keystone_authtoken, option: admin_user, value: nova }
     - { section: keystone_authtoken, option: admin_password, 
         value: "{{ openstack_identity_nova_password }}" }
@@ -112,6 +114,8 @@
         option: rpc_backend, value: neutron.openstack.common.rpc.impl_kombu }
     - { section: DEFAULT,
         option: rabbit_host, value: "{{ openstack_rabbitmq_host }}" }
+    - { section: DEFAULT,
+        option: rabbit_hosts, value: "{{ openstack_rabbitmq_host }}" }
     - { section: DEFAULT,
         option: rabbit_port, value: "{{ openstack_rabbitmq_port }}" }
     - { section: DEFAULT, option: rabbit_userid, value: neutron }
@@ -148,8 +152,8 @@
     - { section: ml2, option: tenant_network_types, value: gre }
     - { section: ml2, option: mechanism_drivers, value: openvswitch }
     - { section: ml2_type_gre, option: tunnel_id_ranges, value: "1:1000" }
-    - { section: ovs, option: local_ip,
-        value: "{{ openstack_compute_node_ip }}" }
+    - { section: ovs, 
+        option: local_ip, value: "{{ openstack_compute_node_ip }}" }
     - { section: ovs, option: tunnel_type, value: gre }
     - { section: ovs, option: enable_tunneling, value: true }
     - { section: securitygroup, option: firewall_driver,
@@ -157,13 +161,13 @@
     - { section: securitygroup, option: enable_security_group, value: true }
   register: modify_ml2_ini
 
-- name: restart nova services if changes are made to configuration files
-  shell: ls /etc/init/nova-* | while read initconf; do service $(basename ${initconf} .conf) restart; done
+- name: restart nova-compute if changes are made to configuration files
+  command: service nova-compute restart
   when: modify_nova_conf|changed and
         nova_compute_dockerize_context is not defined
 
 - name: restart neutron services if changes are made to configuration files
-  shell: ls /etc/init/neutron-* | grep -v ovs | while read initconf; do service $(basename ${initconf} .conf) restart; done
+  command: service neutron-openvswitch-agent restart
   when: (modify_neutron_conf|changed or modify_ml2_ini|changed) and
         nova_compute_dockerize_context is not defined
 
