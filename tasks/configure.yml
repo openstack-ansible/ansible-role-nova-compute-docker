@@ -161,16 +161,13 @@
     - { section: securitygroup, option: enable_security_group, value: true }
   register: modify_ml2_ini
 
-- name: restart nova services if changes are made to configuration files
-  service:
-    name: nova-compute
-    status: restarted
+- name: restart nova-compute if changes are made to configuration files
+  command: service nova-compute restart
   when: modify_nova_conf|changed and
         nova_compute_dockerize_context is not defined
 
 - name: restart neutron services if changes are made to configuration files
-    service: neutron-openvswitch-agent
-    status: restart
+  command: service neutron-openvswitch-agent restart
   when: (modify_neutron_conf|changed or modify_ml2_ini|changed) and
         nova_compute_dockerize_context is not defined
 

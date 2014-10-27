@@ -6,7 +6,6 @@
   with_items:
     - ca-certificates
     - epel-release
-    - iproute
     - yum-plugin-priorities
 
 - name: ensure the openstack rdo repository is enabled
@@ -19,6 +18,7 @@
     name: "{{ item  }}"
     state: latest
   with_items:
+    - iproute
     - openstack-selinux
     - openstack-utils
   
