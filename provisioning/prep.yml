@@ -2,6 +2,24 @@
 - hosts: all
   gather_facts: True
   sudo: True
+  roles:
+    - marklee77.docker
+
+- hosts: controller
+  gather_facts: True
+  sudo: True
+  roles:
+    - marklee77.mariadb
+    - marklee77.rabbitmq-server
+    - marklee77.keystone
+    - marklee77.glance
+    - marklee77.nova-controller
+    - marklee77.neutron-controller
+    - marklee77.neutron-network
+
+- hosts: controller
+  gather_facts: True
+  sudo: True
   tasks:
 
     - name: ensure required packages for prep are installed
@@ -17,20 +35,3 @@
         - python-novaclient
         - python-neutronclient
 
-- hosts: all
-  gather_facts: True
-  sudo: True
-  roles:
-    - marklee77.docker
-
-- hosts: controller
-  gather_facts: True
-  sudo: True
-  roles:
-    - marklee77.mariadb
-    - marklee77.rabbitmq-server
-    - marklee77.keystone
-    - marklee77.glance
-    - marklee77.nova-controller
-    - marklee77.neutron-controller
-    - marklee77.neutron-network

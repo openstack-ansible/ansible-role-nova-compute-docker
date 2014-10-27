@@ -73,6 +73,14 @@
   with_items:
     - git+https://github.com/marklee77/nova-docker@fix-mtu#egg=novadocker
 
+- name: ensure that /etc/nova/rootwrap.d directory exists
+  file:
+    dest: /etc/nova/rootwrap.d
+    owner: root
+    group: root
+    mode: 0755
+    state: directory
+
 - name: update rootwrap docker.filters from template
   template:
     owner: root
