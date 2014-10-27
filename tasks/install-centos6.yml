@@ -6,6 +6,7 @@
   with_items:
     - ca-certificates
     - epel-release
+    - iproute
     - yum-plugin-priorities
 
 - name: ensure the openstack rdo repository is enabled
@@ -34,6 +35,12 @@
   file: 
     src: /etc/neutron/plugins/ml2/ml2_conf.ini
     dest: /etc/neutron/plugin.ini
+    state: link
+
+- name: ensure that link to openstack-nova-compute exists
+  file:
+    src: /etc/init.d/openstack-nova-compute
+    dest: /etc/init.d/nova-compute
     state: link
 
 - name: patch /etc/init.d/neutron-openvswitch-agent to reference plugin.ini

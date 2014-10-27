@@ -162,12 +162,15 @@
   register: modify_ml2_ini
 
 - name: restart nova services if changes are made to configuration files
-  shell: ls /etc/init/nova-* | while read initconf; do service $(basename ${initconf} .conf) restart; done
+  service:
+    name: nova-compute
+    status: restarted
   when: modify_nova_conf|changed and
         nova_compute_dockerize_context is not defined
 
 - name: restart neutron services if changes are made to configuration files
-  shell: ls /etc/init/neutron-* | grep -v ovs | while read initconf; do service $(basename ${initconf} .conf) restart; done
+    service: neutron-openvswitch-agent
+    status: restart
   when: (modify_neutron_conf|changed or modify_ml2_ini|changed) and
         nova_compute_dockerize_context is not defined
 
