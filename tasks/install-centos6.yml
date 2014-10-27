@@ -50,6 +50,37 @@
     replace: plugin.ini
   register: patch_neutron_openvswitch_agent
 
+- name: ensure that pip is installed
+  shell: curl -s https://bootstrap.pypa.io/get-pip.py | python -
+         creates=/usr/local/bin/pip
+
+- name: ensure nova user is a member of the docker group
+  user:
+    name: nova
+    groups: docker
+    append: yes
+    state: present
+  register: nova_user_mod
+
+- name: restart nova-compute if necessary
+  command: service nova-compute restart 
+  when: nova_user_mod|changed
+
+- name: ensure nova-compute-docker is installed
+  pip:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - git+https://github.com/marklee77/nova-docker@fix-mtu#egg=novadocker
+
+- name: update rootwrap docker.filters from template
+  template:
+    owner: root
+    group: root
+    mode: 0755
+    src: etc/nova/rootwrap.d/docker.filters
+    dest: /etc/nova/rootwrap.d/docker.filters
+
 - name: restart neutron-openvswitch-agent if necessary
   service:
     name: neutron-openvswitch-agent
