@@ -13,7 +13,7 @@
     name: http://repos.fedorapeople.org/repos/openstack/openstack-icehouse/rdo-release-icehouse-3.noarch.rpm
     state: present
 
-- name: ensure basic openstack pages are installed and up to date
+- name: ensure basic openstack packages are installed and up to date
   yum:
     name: "{{ item  }}"
     state: latest
