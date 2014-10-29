@@ -167,7 +167,7 @@
         nova_compute_dockerize_context is not defined
 
 - name: restart neutron services if changes are made to configuration files
-  command: service neutron-openvswitch-agent restart
+  command: service neutron-plugin-openvswitch-agent restart
   when: (modify_neutron_conf|changed or modify_ml2_ini|changed) and
         nova_compute_dockerize_context is not defined
 

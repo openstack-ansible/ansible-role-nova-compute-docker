@@ -10,7 +10,7 @@
 
 - name: ensure the openstack rdo repository is enabled
   yum:
-    name: http://repos.fedorapeople.org/repos/openstack/openstack-icehouse/rdo-release-icehouse-3.noarch.rpm
+    name: http://repos.fedorapeople.org/repos/openstack/openstack-icehouse/rdo-release-icehouse-4.noarch.rpm
     state: present
 
 - name: ensure basic openstack packages are installed and up to date
@@ -41,6 +41,12 @@
   file:
     src: /etc/init.d/openstack-nova-compute
     dest: /etc/init.d/nova-compute
+    state: link
+
+- name: ensure that link to neutron-openvswitch-agent exists
+  file:
+    src: /etc/init.d/neutron-openvswitch-agent
+    dest: /etc/init.d/neutron-plugin-openvswitch-agent
     state: link
 
 - name: patch /etc/init.d/neutron-openvswitch-agent to reference plugin.ini
