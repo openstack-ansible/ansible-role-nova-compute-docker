@@ -11,10 +11,6 @@
     - neutron-plugin-ml2
     - neutron-plugin-openvswitch-agent
 
-- name: ensure that pip is installed
-  shell: curl -s https://bootstrap.pypa.io/get-pip.py | python -
-         creates=/usr/local/bin/pip
-
 - name: ensure nova user is a member of the docker group
   user:
     name: nova
@@ -29,14 +25,16 @@
     state: restarted
   when: nova_user_mod|changed
 
+- name: ensure that pip is installed
+  shell: curl -s https://bootstrap.pypa.io/get-pip.py | python -
+         creates=/usr/local/bin/pip
+
 - name: ensure nova-compute-docker is installed
   pip:
     name: "{{ item }}"
     state: latest
   with_items:
-    - git+https://github.com/marklee77/nova-docker@fix-mtu#egg=novadocker
-
-#   - git+https://github.com/stackforge/nova-docker@9045ca43b645e72751099491bf5f4f9e4bddbb91#egg=novadocker
+    - git+https://github.com/marklee77/nova-docker@{{ openstack_nova_docker_branch }}#egg=novadocker
 
 - name: update rootwrap docker.filters from template
   template:

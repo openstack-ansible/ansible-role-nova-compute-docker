@@ -47,8 +47,8 @@ openstack_mysql_port: 3306
 openstack_rabbitmq_host: 10.1.0.2
 openstack_rabbitmq_port: 5672
 
-openstack_compute_package: nova-compute-kvm
-openstack_compute_virt_type: qemu
+openstack_compute_nova_docker_branch: harness-demo
+
 openstack_compute_node_ip: "{{ ansible_eth0.ipv4.address }}"
 openstack_vncserver_bind_address: "{{ openstack_compute_node_ip }}"
 
