@@ -77,7 +77,7 @@
     name: "{{ item }}"
     state: latest
   with_items:
-    - git+https://github.com/marklee77/nova-docker@{{ openstack_nova_docker_branch }}#egg=novadocker
+    - git+https://github.com/marklee77/nova-docker@{{ openstack_compute_docker_branch }}#egg=novadocker
 
 - name: ensure that /etc/nova/rootwrap.d directory exists
   file:
