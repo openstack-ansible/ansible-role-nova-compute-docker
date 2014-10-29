@@ -34,7 +34,7 @@
     name: "{{ item }}"
     state: latest
   with_items:
-    - git+https://github.com/marklee77/nova-docker@{{ openstack_compute_docker_branch }}#egg=novadocker
+    - git+https://github.com/marklee77/nova-docker@{{ openstack_compute_nova_docker_branch }}#egg=novadocker
 
 - name: update rootwrap docker.filters from template
   template:
