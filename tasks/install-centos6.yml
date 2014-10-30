@@ -6,6 +6,7 @@
   with_items:
     - ca-certificates
     - epel-release
+    - python-pip
     - yum-plugin-priorities
 
 - name: ensure the openstack rdo repository is enabled
@@ -56,10 +57,6 @@
     replace: plugin.ini
   register: patch_neutron_openvswitch_agent
 
-- name: ensure that pip is installed
-  shell: curl -s https://bootstrap.pypa.io/get-pip.py | python -
-         creates=/usr/local/bin/pip
-
 - name: ensure nova user is a member of the docker group
   user:
     name: nova
@@ -73,11 +70,8 @@
   when: nova_user_mod|changed
 
 - name: ensure nova-compute-docker is installed
-  pip:
-    name: "{{ item }}"
-    state: latest
-  with_items:
-    - git+https://github.com/marklee77/nova-docker@{{ openstack_compute_nova_docker_branch }}#egg=novadocker
+  command: pip install git+https://github.com/marklee77/nova-docker@{{ openstack_compute_nova_docker_branch }}#egg=novadocker
+           creates=/usr/lib/python2.6/site-packages/novadocker
 
 - name: ensure that /etc/nova/rootwrap.d directory exists
   file:

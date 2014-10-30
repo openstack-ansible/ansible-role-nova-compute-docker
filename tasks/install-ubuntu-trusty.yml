@@ -30,11 +30,8 @@
          creates=/usr/local/bin/pip
 
 - name: ensure nova-compute-docker is installed
-  pip:
-    name: "{{ item }}"
-    state: latest
-  with_items:
-    - git+https://github.com/marklee77/nova-docker@{{ openstack_compute_nova_docker_branch }}#egg=novadocker
+  command: pip install git+https://github.com/marklee77/nova-docker@{{ openstack_compute_nova_docker_branch }}#egg=novadocker
+           creates=/usr/local/lib/python2.7/dist-packages/novadocker
 
 - name: update rootwrap docker.filters from template
   template:
