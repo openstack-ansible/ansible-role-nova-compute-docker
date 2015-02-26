@@ -15,7 +15,7 @@
 
 - name: ensure that pip is installed
   shell: curl -s https://bootstrap.pypa.io/get-pip.py | python -
-         creates=/usr/local/bin/pip
+         creates=/usr/bin/pip
 
 - name: ensure basic openstack packages are installed and up to date
   yum:
