@@ -9,7 +9,6 @@
 - hosts: all
   sudo: False
   vars:
-    cirros_url: http://cdn.download.cirros-cloud.net/0.3.3/cirros-0.3.3-x86_64-disk.img
     openstack_identity_demo_password: password
   tasks:
 
@@ -48,23 +47,26 @@
         dest: "{{ ansible_env.PWD }}/demo.openrc"
         mode: 0600
 
-    - name: ensure cirros image is registered
-      shell: docker save cirros | glance image-create --is-public=True --container-format=docker --disk-format=raw --name cirros 
-      ignore_errors: true
+    - name: check to see what images have been registered with glance
+      command: glance --os-auth-url "{{ openstack_identity_public_url }}" --os-tenant-name demo --os-username demo --os-password "{{ openstack_identity_demo_password }}" image-list
+      register: glance_image_check
+      changed_when: false
 
-    #  glance_image:
-    #    auth_url: "{{ openstack_identity_public_url }}"
-    #    login_tenant_name: demo
-    #    login_username: demo
-    #    login_password: "{{ openstack_identity_demo_password }}"
-    #    name: cirros
-    #    disk_format: qcow2
-    #    copy_from: "{{ cirros_url }}"
-    #    is_public: True
-    #    timeout: 1200
-    #    state: present
-    #  register: cirros_image
+    - name: import cirros image into glance if necessary
+      shell: docker save marklee77/cirros | glance --os-auth-url "{{ openstack_identity_public_url }}" --os-tenant-name demo --os-username demo --os-password "{{ openstack_identity_demo_password }}" image-create --name=marklee77/cirros --is-public=true --container-format=docker --disk-format=raw
+      when: -1 == glance_image_check.stdout.find("marklee77/cirros")
 
+    - name: query glance for image id
+      glance_image:
+        auth_url: "{{ openstack_identity_public_url }}"
+        login_tenant_name: demo
+        login_username: demo
+        login_password: "{{ openstack_identity_demo_password }}"
+        name: marklee77/cirros
+        file: /tmp/dummy
+        state: present
+      register: cirros_image
+ 
     # Ansible neutron modules lists all tenants to get ids, but this is not
     # permitted for non-admin users. Need to fix neutron_* modules as non-admin
     # *should* be able to create networks, associate floating ips, etc.
@@ -179,42 +181,42 @@
       command: neutron --os-auth-url "{{ openstack_identity_public_url }}" --os-tenant-name demo --os-username demo --os-password "{{ openstack_identity_demo_password }}" security-group-rule-create --direction=ingress --protocol=tcp --port-range-min=22 --port-range-max=22 demo-secgroup
       when: verify_secgroup|failed
 
-    #- name: create a new virtual machine instance
-    #  nova_compute:
-    #    auth_url: "{{ openstack_identity_public_url }}"
-    #    login_tenant_name: demo
-    #    login_username: demo
-    #    login_password: "{{ openstack_identity_demo_password }}"
-    #    name: demo-instance
-    #    flavor_id: 1
-    #    image_id: "{{ cirros_image.id }}"
-    #    nics:
-    #      - net-id: "{{ openstack_network_internal.id }}"
-    #    key_name: demo-keypair
-    #    security_groups: demo-secgroup
-    #    wait: "yes"
-    #    state: present
+    - name: create a new virtual machine instance
+      nova_compute:
+        auth_url: "{{ openstack_identity_public_url }}"
+        login_tenant_name: demo
+        login_username: demo
+        login_password: "{{ openstack_identity_demo_password }}"
+        name: demo-instance
+        flavor_id: 1
+        image_id: "{{ cirros_image.id }}"
+        nics:
+          - net-id: "{{ openstack_network_internal.id }}"
+        key_name: demo-keypair
+        security_groups: demo-secgroup
+        wait: "yes"
+        state: present
 
-    #- name: ensure floating ip is associated with vm instance
-    #  neutron_floating_ip:
-    #    auth_url: "{{ openstack_identity_public_url }}"
-    #    login_tenant_name: demo
-    #    login_username: demo
-    #    login_password: "{{ openstack_identity_demo_password }}"
-    #    instance_name: demo-instance
-    #    network_name: public
-    #    state: present
-    #  register: demo_floating_ip
+    - name: ensure floating ip is associated with vm instance
+      neutron_floating_ip:
+        auth_url: "{{ openstack_identity_public_url }}"
+        login_tenant_name: demo
+        login_username: demo
+        login_password: "{{ openstack_identity_demo_password }}"
+        instance_name: demo-instance
+        network_name: public
+        state: present
+      register: demo_floating_ip
 
-    #- name: wait for ssh to become available
-    #  wait_for:
-    #    host: "{{ demo_floating_ip.public_ip }}"
-    #    port: 22
+    - name: wait for ssh to become available
+      wait_for:
+        host: "{{ demo_floating_ip.public_ip }}"
+        port: 22
 
-    #- name: ping demo virtual machine
-    #  command: ping -c 4 {{ demo_floating_ip.public_ip }}
-    #  changed_when: false
+    - name: ping demo virtual machine
+      command: ping -c 4 {{ demo_floating_ip.public_ip }}
+      changed_when: false
 
-    #- name: verify that virtual machine can be logged into via ssh
-    #  command: ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no cirros@{{ demo_floating_ip.public_ip }} hostname
-    #  changed_when: false
+    - name: verify that virtual machine can be logged into via ssh
+      command: ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no cirros@{{ demo_floating_ip.public_ip }} hostname
+      changed_when: false
