@@ -3,8 +3,8 @@
   sudo: True
   tasks:
     - command: docker pull marklee77/baseimage-cloud
-      register: docker_pull_baseimage-cloud
-      changed_when: not docker_pull_baseimage-cloud.stdout.find("Image is up to date")
+      register: docker_pull_baseimage_cloud
+      changed_when: not docker_pull_baseimage_cloud.stdout.find("Image is up to date")
 
 - hosts: all
   sudo: False
@@ -65,7 +65,7 @@
         name: marklee77/baseimage-cloud
         file: /tmp/dummy
         state: present
-      register: baseimage-cloud_image
+      register: baseimage_cloud_image
  
     # Ansible neutron modules lists all tenants to get ids, but this is not
     # permitted for non-admin users. Need to fix neutron_* modules as non-admin
@@ -189,7 +189,7 @@
         login_password: "{{ openstack_identity_demo_password }}"
         name: demo-instance
         flavor_id: 1
-        image_id: "{{ baseimage-cloud_image.id }}"
+        image_id: "{{ baseimage_cloud_image.id }}"
         nics:
           - net-id: "{{ openstack_network_internal.id }}"
         key_name: demo-keypair
@@ -218,5 +218,5 @@
       changed_when: false
 
     - name: verify that virtual machine can be logged into via ssh
-      command: ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no baseimage-cloud@{{ demo_floating_ip.public_ip }} hostname
+      command: ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@{{ demo_floating_ip.public_ip }} hostname
       changed_when: false
