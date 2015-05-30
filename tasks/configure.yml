@@ -105,7 +105,8 @@
     option: "{{ item.option }}"
     value: "{{ item.value }}"
   with_items:
-    - { section: DEFAULT, option: verbose, value: "{{ openstack_log_verbose }}" }
+    - { section: DEFAULT, 
+        option: verbose, value: "{{ openstack_log_verbose }}" }
     - { section: DEFAULT, option: debug, value: "{{ openstack_log_debug }}" }
     - { section: DEFAULT, option: log_dir, value: /var/log/neutron }
     - { section: DEFAULT,
@@ -155,7 +156,9 @@
     - { section: ovs, option: tunnel_type, value: gre }
     - { section: ovs, option: enable_tunneling, value: true }
     - { section: securitygroup, option: firewall_driver,
-        value: neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver }
+        value: >
+          neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver 
+      }
     - { section: securitygroup, option: enable_security_group, value: true }
   register: modify_ml2_ini
 
