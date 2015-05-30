@@ -156,7 +156,7 @@
     - { section: ovs, option: tunnel_type, value: gre }
     - { section: ovs, option: enable_tunneling, value: true }
     - { section: securitygroup, option: firewall_driver,
-        value: >
+        value: 
           neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver 
       }
     - { section: securitygroup, option: enable_security_group, value: true }
