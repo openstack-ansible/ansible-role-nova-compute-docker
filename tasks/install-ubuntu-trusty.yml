@@ -29,13 +29,10 @@
   shell: curl -s https://bootstrap.pypa.io/get-pip.py | python -
          creates=/usr/local/bin/pip
 
-# FIXME: pip module?
 - name: ensure nova-compute-docker is installed
-  command: >
-    pip install 
-    git+https://github.com/marklee77/nova-docker@{{ openstack_compute_nova_docker_branch }}#egg=novadocker
-  args:
-    creates: /usr/local/lib/python2.7/dist-packages/novadocker
+  pip:
+    name: "{{ openstack_compute_nova_docker_package }}"
+    state: latest
 
 - name: update rootwrap docker.filters from template
   template:
