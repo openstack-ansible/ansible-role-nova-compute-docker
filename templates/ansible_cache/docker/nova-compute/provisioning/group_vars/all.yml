@@ -1,7 +1,0 @@
----
-# This file is ONLY for variables that are expected to be static across all
-# deployments or that may affect the image BUILD. Configuration and runtime
-# variables should be passed directly.
-nova_compute_dockerize_context: docker
-openstack_vncserver_bind_address: "0.0.0.0"
-openstack_compute_package: "{{ openstack_compute_package }}"

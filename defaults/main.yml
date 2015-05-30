@@ -72,9 +72,3 @@ openstack_network_internal_url: >
   http://{{ openstack_network_endpoint_host }}:9696
 
 openstack_identity_region: RegionOne
-
-# The variables below only apply to dockerized deployment
-nova_compute_dockerized_deployment: false
-nova_compute_docker_username: default
-nova_compute_docker_imagename: nova-compute
-nova_compute_docker_containername: nova-compute

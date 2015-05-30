@@ -1,16 +1,10 @@
 ---
-- include: docker.yml
-  when: nova_compute_dockerized_deployment
-
 - include: install-ubuntu-trusty.yml
-  when: not nova_compute_dockerized_deployment and
-        ansible_distribution == "Ubuntu" and
+  when: ansible_distribution == "Ubuntu" and
         ansible_distribution_release == "trusty"
 
 - include: install-centos6.yml
-  when: not nova_compute_dockerized_deployment and
-        ansible_distribution == "CentOS" and
+  when: ansible_distribution == "CentOS" and
         ansible_distribution_major_version == "6"
 
 - include: configure.yml
-  when: not nova_compute_dockerized_deployment 

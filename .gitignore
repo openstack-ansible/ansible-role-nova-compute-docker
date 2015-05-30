@@ -1,8 +1,6 @@
 .*.swp
 .vagrant
-library/*
 private
-library/*
-!library/docker
+library
 roles/*
-!roles/marklee77.nova-compute
+!roles/nova-compute-docker

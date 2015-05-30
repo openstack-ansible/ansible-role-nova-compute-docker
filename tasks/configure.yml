@@ -11,13 +11,11 @@
     - { name: net.ipv4.ip_forward, value: 1 }
     - { name: net.ipv4.conf.all.rp_filter, value: 0 }
     - { name: net.ipv4.conf.default.rp_filter, value: 0 }
-  when: nova_compute_dockerize_context is not defined
 
 - name: ensure that openvswitch integration bridge exists
   openvswitch_bridge:
     bridge: br-int
     state: present
-  when: nova_compute_dockerize_context is not defined
  
 - name: ensure nova.conf is properly configured
   ini_file:
@@ -163,13 +161,11 @@
 
 - name: restart nova-compute if changes are made to configuration files
   command: service nova-compute restart
-  when: modify_nova_conf|changed and
-        nova_compute_dockerize_context is not defined
+  when: modify_nova_conf|changed
 
 - name: restart neutron services if changes are made to configuration files
   command: service neutron-plugin-openvswitch-agent restart
-  when: (modify_neutron_conf|changed or modify_ml2_ini|changed) and
-        nova_compute_dockerize_context is not defined
+  when: modify_neutron_conf|changed or modify_ml2_ini|changed
 
 - name: ensure nova and neutron sqlite are deleted
   file:
