@@ -34,6 +34,7 @@
 - hosts: all
   gather_facts: True
   sudo: True
+  vars_files: defaults/main.yml
   roles:
     - mysql
     - rabbitmq-server
