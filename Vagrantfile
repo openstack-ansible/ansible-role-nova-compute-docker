@@ -28,6 +28,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     m.vm.provision "ansible" do |ansible|
       ansible.playbook = "prepare-vm.yml"
       ansible.extra_vars = {
+        mysql_bind_address: "0.0.0.0",
         openstack_mysql_host: "10.1.0.2",
         openstack_rabbitmq_host: "10.1.0.2",
         openstack_identity_endpoint_host: "10.1.0.2",
