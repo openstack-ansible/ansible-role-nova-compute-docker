@@ -29,4 +29,12 @@ openstack_compute_repo_info:
 openstack_compute_pip_path: /usr/bin/pip
 
 openstack_compute_nova_docker_module_path: 
-  /usr/lib/python2.7/dist-packages/novadocker
+  /usr/lib/python2.6/site-packages/novadocker
+
+openstack_compute_links:
+  - { src: /etc/neutron/plugins/ml2/ml2_conf.ini, 
+      dest: /etc/neutron/plugins/openvswitch/ovs_neutron_plugin.ini }
+  - { src: /etc/init.d/openstack-nova-compute, 
+      dest: /etc/init.d/nova-compute }
+  - { src: /etc/init.d/neutron-openvswitch-agent,
+      dest: /etc/init.d/neutron-plugin-openvswitch-agent }
