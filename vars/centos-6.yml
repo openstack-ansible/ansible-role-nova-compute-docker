@@ -1,0 +1,29 @@
+openstack_compute_package_info:
+  pkg_mgr: yum
+  args:
+    pkg: "{{ item }}"
+    state: latest
+    update_cache: yes
+  pre_pkgs: 
+    - epel-release
+    - iproute
+    - yum-plugin-priorities
+  pkgs:
+    - openstack-selinux
+    - openstack-utils
+    - openstack-neutron-ml2
+    - openstack-neutron-openvswitch
+    - openstack-nova-compute
+
+openstack_compute_repo_info:
+  pkg_repo: yum
+  args: 
+    name: "{{ item }}"
+    state: present
+  repos: 
+    - http://repos.fedorapeople.org/repos/openstack/openstack-icehouse/rdo-release-icehouse-4.noarch.rpm
+
+openstack_compute_pip_path: /usr/bin/pip
+
+openstack_compute_nova_docker_module_path: 
+  /usr/local/lib/python2.7/dist-packages/novadocker
