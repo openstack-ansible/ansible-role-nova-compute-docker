@@ -42,6 +42,6 @@ openstack_compute_links:
 openstack_compute_services:
  - libvirtd
  - messagebus
- - neutron-openvswitch-agent
- - openstack-nova-compute
  - openvswitch
+ - nova-compute
+ - neutron-plugin-openvswitch-agent

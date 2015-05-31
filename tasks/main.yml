@@ -78,14 +78,6 @@
   with_items: openstack_compute_links
   when: openstack_compute_links|length > 0
     
-- name: ensure nova compute services are started and enabled
-  service: 
-    name: "{{ item }}"
-    state: started 
-    enabled: yes
-  with_items: openstack_compute_services
-  when: openstack_compute_services|length > 0
-
 - name: ensure that openvswitch integration bridge exists
   openvswitch_bridge:
     bridge: br-int
@@ -98,6 +90,14 @@
     append: yes
     state: present
   register: nova_user_mod
+
+- name: ensure nova compute services are started and enabled
+  service: 
+    name: "{{ item }}"
+    state: started 
+    enabled: yes
+  with_items: openstack_compute_services
+  when: openstack_compute_services|length > 0
 
 - name: ensure nova.conf is properly configured
   ini_file:
@@ -181,9 +181,9 @@
 
 - name: restart nova-compute if changes are made to configuration files
   command: service nova-compute restart
-  when: nova_user_mod|changed or 
-        modify_nova_conf|changed or 
-        modify_nova_compute_conf|changed 
+  when: nova_user_mod|changed or
+        modify_nova_conf|changed or
+        modify_nova_compute_conf|changed
 
 - name: ensure neutron.conf is properly configured
   ini_file:
