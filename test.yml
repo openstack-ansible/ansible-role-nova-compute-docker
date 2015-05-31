@@ -8,7 +8,8 @@
 
 - hosts: all
   sudo: False
-  vars_files: default/main.yml
+  vars_files: 
+    - defaults/main.yml
   vars:
     openstack_identity_demo_password: password
   tasks:

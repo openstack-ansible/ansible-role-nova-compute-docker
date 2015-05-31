@@ -3,17 +3,17 @@
   include_vars: "{{ item }}"
   with_first_found:
     - files:
-      - "{{ ansible_distribution|lower }}-{{ 
-            ansible_distribution_version }}.yml"
-      - "{{ ansible_distribution|lower }}-{{ 
-            ansible_distribution_release }}.yml"
-      - "{{ ansible_distribution|lower }}-{{ 
-            ansible_distribution_major_version }}.yml"
-      - "{{ ansible_distribution|lower }}.yml"
-      - "{{ ansible_os_family|lower }}.yml"
-      - defaults.yml
+        - "{{ ansible_distribution|lower }}-{{ 
+              ansible_distribution_version }}.yml"
+        - "{{ ansible_distribution|lower }}-{{ 
+              ansible_distribution_release }}.yml"
+        - "{{ ansible_distribution|lower }}-{{ 
+              ansible_distribution_major_version }}.yml"
+        - "{{ ansible_distribution|lower }}.yml"
+        - "{{ ansible_os_family|lower }}.yml"
+        - defaults.yml
       paths:
-      - ../vars
+        - ../vars
 
 - name: ensure sysctl is appropriately configured
   sysctl:

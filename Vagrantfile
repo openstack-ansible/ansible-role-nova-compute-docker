@@ -28,6 +28,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     m.vm.provision "ansible" do |ansible|
       ansible.playbook = "prepare-vm.yml"
       ansible.extra_vars = {
+        openstack_mysql_host: "10.1.0.2",
+        openstack_rabbitmq_host: "10.1.0.2",
+        openstack_identity_endpoint_host: "10.1.0.2",
+        openstack_image_endpoint_host: "10.1.0.2",
+        openstack_compute_endpoint_host: "10.1.0.2",
+        openstack_network_endpoint_host: "10.1.0.2",
         openstack_network_external_device: "eth1",
         openstack_network_external_gateway: "10.1.0.2"
       }
