@@ -31,4 +31,5 @@ openstack_compute_links: []
 
 openstack_compute_services:
   - nova-compute
+  - neutron-plugin-openvswitch-agent
   - openvswitch-switch
