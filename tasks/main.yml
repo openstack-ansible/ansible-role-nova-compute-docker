@@ -1,10 +1,3 @@
 ---
-- include: install-ubuntu-trusty.yml
-  when: ansible_distribution == "Ubuntu" and
-        ansible_distribution_release == "trusty"
-
-- include: install-centos6.yml
-  when: ansible_distribution == "CentOS" and
-        ansible_distribution_major_version == "6"
-
+- include: install.yml
 - include: configure.yml
