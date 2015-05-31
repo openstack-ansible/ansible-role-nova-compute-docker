@@ -6,7 +6,10 @@ openstack_compute_package_info:
     update_cache: yes
   pre_pkgs: 
     - epel-release
+    - curl
+    - git
     - iproute
+    - libselinux-python
     - yum-plugin-priorities
   pkgs:
     - openstack-selinux
@@ -26,4 +29,4 @@ openstack_compute_repo_info:
 openstack_compute_pip_path: /usr/bin/pip
 
 openstack_compute_nova_docker_module_path: 
-  /usr/local/lib/python2.7/dist-packages/novadocker
+  /usr/lib/python2.7/dist-packages/novadocker

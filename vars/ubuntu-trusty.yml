@@ -5,7 +5,9 @@ openstack_compute_package_info:
     update_cache: yes
     cache_valid_time: 600
     state: latest
-  pre_pkgs: []
+  pre_pkgs: 
+    - curl
+    - git
   pkgs:
     - nova-compute-lxc
     - neutron-common

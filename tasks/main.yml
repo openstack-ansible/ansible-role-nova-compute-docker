@@ -15,6 +15,12 @@
       paths:
         - ../vars
 
+- name: ensure openstack compute requirements packages are installed
+  action: "{{ openstack_compute_package_info.pkg_mgr }}"
+  args: openstack_compute_package_info.args
+  with_items: openstack_compute_package_info.pre_pkgs
+  when: openstack_compute_package_info.pre_pkgs|length > 0
+
 - name: ensure sysctl is appropriately configured
   sysctl:
     name: "{{ item.name }}"
@@ -25,13 +31,7 @@
     - { name: net.ipv4.conf.all.rp_filter, value: 0 }
     - { name: net.ipv4.conf.default.rp_filter, value: 0 }
 
-- name: ensure openstack compute requirements packages are installed
-  action: "{{ openstack_compute_package_info.pkg_mgr }}"
-  args: openstack_compute_package_info.args
-  with_items: openstack_compute_package_info.pre_pkgs
-  when: openstack_compute_package_info.pre_pkgs|length > 0
-
-- name: ensure openstack compute repository is enabled
+- name: ensure openstack repository is enabled
   action: "{{ openstack_compute_repo_info.pkg_repo }}"
   args: openstack_compute_repo_info.args
   with_items: openstack_compute_repo_info.repos
@@ -52,6 +52,14 @@
   command: pip install {{ openstack_compute_nova_docker_package }}
   args:
     creates: "{{ openstack_compute_nova_docker_module_path }}"
+
+- name: ensure that /etc/nova/rootwrap.d directory exists
+  file:
+    dest: /etc/nova/rootwrap.d
+    owner: root
+    group: root
+    mode: 0755
+    state: directory
 
 - name: update rootwrap docker.filters from template
   template:
