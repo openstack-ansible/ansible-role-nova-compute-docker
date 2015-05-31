@@ -29,11 +29,10 @@
   shell: curl -s https://bootstrap.pypa.io/get-pip.py | python -
          creates=/usr/local/bin/pip
 
-# state=latest is a problem for git repository urls 
-- name: ensure nova-compute-docker is installed
-  pip:
-    name: "{{ openstack_compute_nova_docker_package }}"
-    state: present
+- name: ensure nova-compute-docker is installed using pip
+  command: pip install {{ openstack_compute_nova_docker_package }}
+  args:
+    creates: /usr/local/lib/python2.7/dist-packages/novadocker
 
 - name: update rootwrap docker.filters from template
   template:
