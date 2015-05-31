@@ -1,7 +1,4 @@
 ---
-# FIXME: my_ip should always be an ip address, so do lookup in case it's a
-# host...
-
 - name: ensure sysctl is appropriately configured
   sysctl:
     name: "{{ item.name }}"
@@ -17,6 +14,14 @@
     bridge: br-int
     state: present
  
+- name: ensure nova user is a member of the docker group
+  user:
+    name: nova
+    groups: docker
+    append: yes
+    state: present
+  register: nova_user_mod
+
 - name: ensure nova.conf is properly configured
   ini_file:
     dest: /etc/nova/nova.conf
@@ -95,7 +100,14 @@
   with_items:
     - { section: DEFAULT, 
         option: compute_driver, value: novadocker.virt.docker.DockerDriver }
- 
+  register: modify_nova_compute_conf
+
+- name: restart nova-compute if changes are made to configuration files
+  command: service nova-compute restart
+  when: nova_user_mod|changed or 
+        modify_nova_conf|changed or 
+        modify_nova_compute_conf|changed 
+
 - name: ensure neutron.conf is properly configured
   ini_file:
     dest: /etc/neutron/neutron.conf
@@ -162,10 +174,6 @@
     - { section: securitygroup, option: enable_security_group, value: true }
   register: modify_ml2_ini
 
-- name: restart nova-compute if changes are made to configuration files
-  command: service nova-compute restart
-  when: modify_nova_conf|changed
-
 - name: restart neutron services if changes are made to configuration files
   command: service neutron-plugin-openvswitch-agent restart
   when: modify_neutron_conf|changed or modify_ml2_ini|changed
@@ -177,4 +185,3 @@
   with_items:
     - nova
     - neutron
-

@@ -1,4 +1,16 @@
 ---
+- name: ensure that software-properties-common is installed if needed
+  apt:
+    pkg: software-properties-common
+    state: latest
+    update_cache: yes
+    cache_valid_time: 600
+  when: ansible_distribution_release == "precise"
+
+- name: ensure that ubuntu cloud archive is available if needed
+  command: apt-add-repository cloud-archive:icehouse
+  when: ansible_distribution_release == "precise"
+
 - name: ensure nova compute packages and dependencies are installed
   apt: 
     pkg: "{{ item }}"
@@ -10,20 +22,6 @@
     - neutron-common
     - neutron-plugin-ml2
     - neutron-plugin-openvswitch-agent
-
-- name: ensure nova user is a member of the docker group
-  user:
-    name: nova
-    groups: docker
-    append: yes
-    state: present
-  register: nova_user_mod
-
-- name: restart nova-compute if necessary
-  service:
-    name: nova-compute
-    state: restarted
-  when: nova_user_mod|changed
 
 - name: ensure that pip is installed
   shell: curl -s https://bootstrap.pypa.io/get-pip.py | python -
