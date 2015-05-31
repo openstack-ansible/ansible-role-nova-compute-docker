@@ -35,7 +35,6 @@
   gather_facts: True
   sudo: True
   roles:
-    - docker
     - mysql
     - rabbitmq-server
     - keystone

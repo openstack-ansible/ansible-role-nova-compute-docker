@@ -22,6 +22,7 @@ Example Playbook
     - hosts: all
       sudo: True
       roles:
+        - docker
         - nova-compute-docker
 
 License
