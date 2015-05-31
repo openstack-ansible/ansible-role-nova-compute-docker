@@ -26,3 +26,9 @@ openstack_compute_pip_path: /usr/local/bin/pip
 
 openstack_compute_nova_docker_module_path: 
   /usr/local/lib/python2.7/dist-packages/novadocker
+
+openstack_compute_links: []
+
+openstack_compute_services:
+  - nova-compute
+  - openvswitch-switch

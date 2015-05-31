@@ -38,3 +38,10 @@ openstack_compute_links:
       dest: /etc/init.d/nova-compute }
   - { src: /etc/init.d/neutron-openvswitch-agent,
       dest: /etc/init.d/neutron-plugin-openvswitch-agent }
+
+openstack_compute_services:
+ - libvirtd
+ - messagebus
+ - neutron-openvswitch-agent
+ - openstack-nova-compute
+ - openvswitch

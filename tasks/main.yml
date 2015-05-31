@@ -76,15 +76,15 @@
     state: link
     force: yes
   with_items: openstack_compute_links
+  when: openstack_compute_links|length > 0
     
-- name: ensure nova compute is started and enabled
+- name: ensure nova compute services are started and enabled
   service: 
     name: "{{ item }}"
     state: started 
     enabled: yes
-  with_items:
-    - nova-compute
-    - openvswitch-switch
+  with_items: openstack_compute_services
+  when: openstack_compute_services|length > 0
 
 - name: ensure that openvswitch integration bridge exists
   openvswitch_bridge:
