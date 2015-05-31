@@ -4,32 +4,40 @@
 VAGRANTFILE_API_VERSION = "2"
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
-  config.vm.box = "ubuntu/trusty64"
-  config.vm.network :private_network, ip: "10.1.0.2", :netmask => "255.255.0.0"
+  config.ssh.insert_key = false
 
-  config.vm.provider :virtualbox do |v|
-    v.memory = 2048
-    v.customize ["modifyvm", :id, "--nicpromisc2", "allow-vms"]
+  config.vm.define "centos-6", autostart: false do |m|
+    m.vm.box = "chef/centos-6.5"
+    m.vm.hostname="centos-6"
+    m.vm.network :private_network, ip: "10.1.0.3", :netmask => "255.255.0.0"
+    m.vm.provider :virtualbox do |v|
+      v.memory = 1280
+    end
   end
-
-  config.vm.provision "ansible" do |ansible|
-    ansible.playbook = "getreqs.yml"
+  
+  config.vm.define "ubuntu-trusty", primary: true do |m|
+    m.vm.box = "ubuntu/trusty64"
+    m.vm.network :private_network, ip: "10.1.0.2", :netmask => "255.255.0.0"
+    m.vm.provider :virtualbox do |v|
+      v.memory = 2048
+      v.customize ["modifyvm", :id, "--nicpromisc2", "allow-vms"]
+    end
+    m.vm.provision "ansible" do |ansible|
+      ansible.playbook = "getreqs.yml"
+    end
+    m.vm.provision "ansible" do |ansible|
+      ansible.playbook = "prepare-vm.yml"
+      ansible.extra_vars = {
+        openstack_network_external_device: "eth1",
+        openstack_network_external_gateway: "10.1.0.2"
+      }
+    end
+    config.vm.provision "ansible" do |ansible|
+      ansible.playbook = "deploy.yml"
+      ansible.limit = "all"
+    end
+    config.vm.provision "ansible" do |ansible|
+      ansible.playbook = "test.yml"
+    end
   end
-
-  config.vm.provision "ansible" do |ansible|
-    ansible.playbook = "prepare-vm.yml"
-    ansible.extra_vars = {
-      openstack_network_external_device: "eth1",
-      openstack_network_external_gateway: "10.1.0.2"
-    }
-  end
-
-  config.vm.provision "ansible" do |ansible|
-    ansible.playbook = "deploy.yml"
-  end
-
-  config.vm.provision "ansible" do |ansible|
-    ansible.playbook = "test.yml"
-  end
-
 end
