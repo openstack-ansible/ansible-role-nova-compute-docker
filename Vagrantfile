@@ -32,12 +32,24 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         openstack_network_external_gateway: "10.1.0.2"
       }
     end
-    config.vm.provision "ansible" do |ansible|
+    m.vm.provision "ansible" do |ansible|
       ansible.playbook = "deploy.yml"
       ansible.limit = "all"
+      ansible.extra_vars = {
+        openstack_identity_endpoint_host: "10.1.0.2",
+        openstack_image_endpoint_host: "10.1.0.2",
+        openstack_compute_endpoint_host: "10.1.0.2",
+        openstack_network_endpoint_host: "10.1.0.2"
+      }
     end
-    config.vm.provision "ansible" do |ansible|
+    m.vm.provision "ansible" do |ansible|
       ansible.playbook = "test.yml"
+      ansible.extra_vars = {
+        openstack_identity_endpoint_host: "10.1.0.2",
+        openstack_image_endpoint_host: "10.1.0.2",
+        openstack_compute_endpoint_host: "10.1.0.2",
+        openstack_network_endpoint_host: "10.1.0.2"
+      }
     end
   end
 end
