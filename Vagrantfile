@@ -35,7 +35,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         openstack_image_endpoint_host: "10.1.0.2",
         openstack_compute_endpoint_host: "10.1.0.2",
         openstack_network_endpoint_host: "10.1.0.2",
-        openstack_compute_node_ip: "10.1.0.2",
+        openstack_compute_node_ip:  "10.1.0.2",
         openstack_network_local_ip: "10.1.0.2",
         openstack_network_external_device: "eth1",
         openstack_network_external_gateway: "10.1.0.2"
@@ -52,7 +52,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         openstack_compute_endpoint_host: "10.1.0.2",
         openstack_network_endpoint_host: "10.1.0.2",
         openstack_compute_node_ip: 
-          "{{ ansible_all_ipv4_addresses|ipaddr('10.1.0.0/16') }}"
+          "{{ ansible_all_ipv4_addresses|ipaddr('10.1.0.0/16')|first }}"
       }
     end
     m.vm.provision "ansible" do |ansible|
