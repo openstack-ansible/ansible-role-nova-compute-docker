@@ -1,12 +1,12 @@
 ---
-- hosts: all
+- hosts: compute
   sudo: True
   tasks:
     - command: docker pull marklee77/baseimage-cloud
       register: docker_pull_baseimage_cloud
       changed_when: not docker_pull_baseimage_cloud.stdout.find("Image is up to date")
 
-- hosts: all
+- hosts: controller
   sudo: False
   vars_files: 
     - defaults/main.yml
