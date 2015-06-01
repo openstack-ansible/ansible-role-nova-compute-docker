@@ -14,9 +14,9 @@ openstack_compute_package_info:
   pkgs:
     - openstack-selinux
     - openstack-utils
+    - openstack-nova-compute
     - openstack-neutron-ml2
     - openstack-neutron-openvswitch
-    - openstack-nova-compute
 
 openstack_compute_repo_info:
   pkg_repo: yum
