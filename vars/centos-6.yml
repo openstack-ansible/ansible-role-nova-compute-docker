@@ -8,10 +8,10 @@ openstack_compute_package_info:
     - epel-release
     - curl
     - git
-    - iproute
     - libselinux-python
     - yum-plugin-priorities
   pkgs:
+    - iproute
     - openstack-selinux
     - openstack-utils
     - openstack-nova-compute
@@ -34,14 +34,15 @@ openstack_compute_nova_docker_module_path:
 openstack_compute_links:
   - { src: /etc/neutron/plugins/ml2/ml2_conf.ini, 
       dest: /etc/neutron/plugins/openvswitch/ovs_neutron_plugin.ini }
-  - { src: /etc/init.d/openstack-nova-compute, 
-      dest: /etc/init.d/nova-compute }
-  - { src: /etc/init.d/neutron-openvswitch-agent,
-      dest: /etc/init.d/neutron-plugin-openvswitch-agent }
 
-openstack_compute_services:
+openstack_compute_required_services:
  - libvirtd
  - messagebus
  - openvswitch
- - nova-compute
- - neutron-plugin-openvswitch-agent
+
+openstack_compute_nova_services:
+ - openstack-nova-compute
+
+openstack_compute_neutron_services:
+ - neutron-openvswitch-agent
+

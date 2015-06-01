@@ -86,13 +86,13 @@
     state: present
   register: nova_user_mod
 
-- name: ensure nova compute services are started and enabled
+- name: ensure compute required services are started and enabled
   service: 
     name: "{{ item }}"
     state: started 
     enabled: yes
-  with_items: openstack_compute_services
-  when: openstack_compute_services|length > 0
+  with_items: openstack_compute_required_services
+  when: openstack_compute_required_services|length > 0
 
 - name: ensure that openvswitch integration bridge exists
   openvswitch_bridge:
@@ -179,8 +179,11 @@
         option: compute_driver, value: novadocker.virt.docker.DockerDriver }
   register: modify_nova_compute_conf
 
-- name: restart nova-compute if changes are made to configuration files
-  command: service nova-compute restart
+- name: restart compute nova services if necessary
+  service: 
+    name: "{{ item }}"
+    state: restarted 
+  with_items: openstack_compute_nova_services
   when: nova_user_mod|changed or
         modify_nova_conf|changed or
         modify_nova_compute_conf|changed
@@ -251,8 +254,11 @@
     - { section: securitygroup, option: enable_security_group, value: true }
   register: modify_ml2_ini
 
-- name: restart neutron services if changes are made to configuration files
-  command: service neutron-plugin-openvswitch-agent restart
+- name: restart compute neutron services if necessary
+  service: 
+    name: "{{ item }}"
+    state: restarted 
+  with_items: openstack_compute_nova_services
   when: modify_neutron_conf|changed or modify_ml2_ini|changed
 
 - name: ensure nova and neutron sqlite are deleted
@@ -262,3 +268,14 @@
   with_items:
     - nova
     - neutron
+
+- name: ensure compute nova and neutron services are started and enabled
+  service: 
+    name: "{{ item }}"
+    state: started 
+    enabled: yes
+  with_flattened: 
+    - openstack_compute_nova_services
+    - openstack_compute_neutron_services
+  when: openstack_compute_nova_services|length > 0 or
+        openstack_compute_neutron_services|length > 0

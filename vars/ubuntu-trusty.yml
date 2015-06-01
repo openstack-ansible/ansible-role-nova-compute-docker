@@ -29,7 +29,11 @@ openstack_compute_nova_docker_module_path:
 
 openstack_compute_links: []
 
-openstack_compute_services:
+openstack_compute_required_services:
   - openvswitch-switch
+
+openstack_compute_nova_services:
   - nova-compute
+
+openstack_compute_neutron_services:
   - neutron-plugin-openvswitch-agent
