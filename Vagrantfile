@@ -58,6 +58,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
     m.vm.provision "ansible" do |ansible|
       ansible.playbook = "test.yml"
+      ansible.limit = "all"
       ansible.groups = {
         "controller" => ["ubuntu-trusty"],
         "compute" => ["centos-6"]
