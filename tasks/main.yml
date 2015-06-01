@@ -263,7 +263,7 @@
   service: 
     name: "{{ item }}"
     state: restarted 
-  with_items: openstack_compute_nova_services
+  with_items: openstack_compute_neutron_services
   when: modify_neutron_conf|changed or modify_ml2_ini|changed
 
 - name: ensure nova and neutron sqlite are deleted
