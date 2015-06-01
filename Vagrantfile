@@ -11,7 +11,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     m.vm.hostname="centos-6"
     m.vm.network :private_network, ip: "10.1.0.3", :netmask => "255.255.0.0"
     m.vm.provider :virtualbox do |v|
-      v.memory = 1280
+      v.memory = 2048
     end
   end
   
