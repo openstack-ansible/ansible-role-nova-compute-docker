@@ -6,7 +6,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.ssh.insert_key = false
 
-  config.vm.define "centos-6", autostart: true do |m|
+  config.vm.define "centos-6", autostart: false do |m|
     m.vm.box = "chef/centos-6.5"
     m.vm.hostname="centos-6"
     m.vm.network :private_network, ip: "10.1.0.3", :netmask => "255.255.0.0"
@@ -44,7 +44,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
     m.vm.provision "ansible" do |ansible|
       ansible.playbook = "deploy.yml"
-      ansible.limit = "centos-6"
+      ansible.limit = "all"
       ansible.extra_vars = {
         openstack_mysql_host: "10.1.0.2",
         openstack_rabbitmq_host: "10.1.0.2",
@@ -61,7 +61,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       ansible.limit = "all"
       ansible.groups = {
         "controller" => ["ubuntu-trusty"],
-        "compute" => ["centos-6"]
+        "compute" => ["ubuntu-trusty"]
       }
       ansible.extra_vars = {
         openstack_mysql_host: "10.1.0.2",
