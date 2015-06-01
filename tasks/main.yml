@@ -48,6 +48,11 @@
   args:
     creates: "{{ openstack_compute_pip_path }}"
 
+- name: ensure docker-py is installed using pip
+  pip:
+    name: docker-py
+    state: latest
+ 
 - name: ensure nova-compute-docker is installed using pip
   command: pip install {{ openstack_compute_nova_docker_package }}
   args:
