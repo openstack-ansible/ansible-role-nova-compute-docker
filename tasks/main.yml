@@ -25,6 +25,7 @@
   sysctl:
     name: "{{ item.name }}"
     value: "{{ item.value }}"
+    ignoreerrors: yes
     state: present
   with_items:
     - { name: net.ipv4.ip_forward, value: 1 }
@@ -113,61 +114,61 @@
     option: "{{ item.option }}"
     value: "{{ item.value }}"
   with_items:
-    - { section: DEFAULT, 
+    - { section: DEFAULT,
         option: verbose, value: "{{ openstack_log_verbose }}" }
     - { section: DEFAULT, option: debug, value: "{{ openstack_log_debug }}" }
     - { section: DEFAULT, option: log_dir, value: /var/log/nova }
     - { section: DEFAULT, option: rpc_backend, value: rabbit }
-    - { section: DEFAULT, 
+    - { section: DEFAULT,
         option: rabbit_host, value: "{{ openstack_rabbitmq_host }}" }
-    - { section: DEFAULT, 
+    - { section: DEFAULT,
         option: rabbit_hosts, value: "{{ openstack_rabbitmq_host }}" }
-    - { section: DEFAULT, option: rabbit_port, 
+    - { section: DEFAULT, option: rabbit_port,
         value: "{{ openstack_rabbitmq_port }}" }
     - { section: DEFAULT, option: rabbit_userid, value: nova }
-    - { section: DEFAULT, option: rabbit_password, 
+    - { section: DEFAULT, option: rabbit_password,
         value: "{{ openstack_rabbitmq_nova_password }}" }
     - { section: DEFAULT, option: rabbit_virtual_host, value: /nova }
-    - { section: DEFAULT, option: glance_host, 
+    - { section: DEFAULT, option: glance_host,
         value: "{{ openstack_image_endpoint_host }}" }
-    - { section: DEFAULT, option: my_ip, 
+    - { section: DEFAULT, option: my_ip,
         value: "{{ openstack_compute_node_ip }}" }
     - { section: DEFAULT, option: vnc_enabled, value: true }
-    - { section: DEFAULT, option: vncserver_listen, 
+    - { section: DEFAULT, option: vncserver_listen,
         value: "{{ openstack_vncserver_bind_address }}" }
-    - { section: DEFAULT, option: vncserver_proxyclient_address, 
+    - { section: DEFAULT, option: vncserver_proxyclient_address,
         value: "{{ openstack_compute_node_ip }}" }
     - { section: DEFAULT, option: novncproxy_base_url,
         value: "http://{{ openstack_compute_endpoint_host }}:6080/vnc_auto.html" }
     - { section: DEFAULT, option: auth_strategy, value: keystone }
-    - { section: DEFAULT, 
+    - { section: DEFAULT,
         option: network_api_class, value: nova.network.neutronv2.api.API }
-    - { section: DEFAULT, 
+    - { section: DEFAULT,
         option: neutron_url, value: "{{ openstack_network_internal_url }}" }
     - { section: DEFAULT, option: neutron_auth_strategy, value: keystone }
     - { section: DEFAULT, option: neutron_admin_tenant_name, value: service }
     - { section: DEFAULT, option: neutron_admin_username, value: neutron }
-    - { section: DEFAULT, option: neutron_admin_password, 
+    - { section: DEFAULT, option: neutron_admin_password,
         value: "{{ openstack_identity_neutron_password }}" }
-    - { section: DEFAULT, option: neutron_admin_auth_url, 
+    - { section: DEFAULT, option: neutron_admin_auth_url,
         value: "{{ openstack_identity_internal_url }}" }
-    - { section: DEFAULT, option: linuxnet_interface_driver, 
+    - { section: DEFAULT, option: linuxnet_interface_driver,
         value: nova.network.linux_net.LinuxOVSInterfaceDriver }
-    - { section: DEFAULT, 
+    - { section: DEFAULT,
         option: firewall_driver, value: nova.virt.firewall.NoopFirewallDriver }
     - { section: DEFAULT, option: security_group_api, value: neutron }
     - { section: database, option: connection,
-        value: "mysql://nova:{{ openstack_mysql_nova_password }}@{{ 
+        value: "mysql://nova:{{ openstack_mysql_nova_password }}@{{
                   openstack_mysql_host }}:{{ openstack_mysql_port }}/nova" }
-    - { section: keystone_authtoken, 
+    - { section: keystone_authtoken,
         option: auth_uri, value: "{{ openstack_identity_internal_url }}" }
-    - { section: keystone_authtoken, option: auth_host, 
+    - { section: keystone_authtoken, option: auth_host,
         value: "{{ openstack_identity_endpoint_host }}" }
     - { section: keystone_authtoken, option: auth_port, value: 35357 }
     - { section: keystone_authtoken, option: auth_protocol, value: http }
     - { section: keystone_authtoken, option: admin_tenant_name, value: service }
     - { section: keystone_authtoken, option: admin_user, value: nova }
-    - { section: keystone_authtoken, option: admin_password, 
+    - { section: keystone_authtoken, option: admin_password,
         value: "{{ openstack_identity_nova_password }}" }
   register: modify_nova_conf
 
@@ -187,7 +188,7 @@
 - name: restart compute nova services if necessary
   service: 
     name: "{{ item }}"
-    state: restarted 
+    state: restarted
   with_items: openstack_compute_nova_services
   when: nova_user_mod|changed or
         modify_nova_conf|changed or
@@ -202,7 +203,7 @@
     option: "{{ item.option }}"
     value: "{{ item.value }}"
   with_items:
-    - { section: DEFAULT, 
+    - { section: DEFAULT,
         option: verbose, value: "{{ openstack_log_verbose }}" }
     - { section: DEFAULT, option: debug, value: "{{ openstack_log_debug }}" }
     - { section: DEFAULT, option: log_dir, value: /var/log/neutron }
