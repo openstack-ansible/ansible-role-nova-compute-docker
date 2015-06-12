@@ -1,0 +1,105 @@
+---
+- name: ensure openstack nova compute requirements packages are installed
+  action: "{{ openstack_nova_compute_package_info.pkg_mgr }}"
+  args: openstack_nova_compute_package_info.args
+  with_items: openstack_nova_compute_package_info.pre_pkgs
+  when: openstack_nova_compute_package_info.pre_pkgs|length > 0
+
+- name: ensure sysctl is appropriately configured
+  sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    ignoreerrors: yes
+    state: present
+  with_items:
+    - { name: net.ipv4.ip_forward, value: 1 }
+    - { name: net.ipv4.conf.all.rp_filter, value: 0 }
+    - { name: net.ipv4.conf.default.rp_filter, value: 0 }
+
+- name: ensure openstack repository is enabled
+  action: "{{ openstack_nova_compute_repo_info.pkg_repo }}"
+  args: openstack_nova_compute_repo_info.args
+  with_items: openstack_nova_compute_repo_info.repos
+  when: openstack_nova_compute_repo_info.repos|length > 0
+
+- name: ensure openstack nova compute packages are installed
+  action: "{{ openstack_nova_compute_package_info.pkg_mgr }}"
+  args: openstack_nova_compute_package_info.args
+  with_items: openstack_nova_compute_package_info.pkgs
+  when: openstack_nova_compute_package_info.pkgs|length > 0
+  register: openstack_nova_compute_package_install
+
+- name: run post-install commands if necessary
+  command: "{{ item }}"
+  with_items: openstack_nova_compute_package_info.post_commands
+  when: openstack_nova_compute_package_info.post_commands|length > 0 and
+        openstack_nova_compute_package_install|changed
+
+- name: ensure that pip is installed
+  shell: curl -s https://bootstrap.pypa.io/get-pip.py | python -
+  args:
+    creates: "{{ openstack_nova_compute_pip_path }}"
+
+- name: ensure docker-py is installed using pip
+  pip:
+    name: docker-py
+    state: latest
+ 
+- name: ensure nova-compute-docker is installed using pip
+  command: pip install {{ openstack_nova_compute_nova_docker_package }}
+  args:
+    creates: "{{ openstack_nova_compute_nova_docker_module_path }}"
+
+- name: ensure that /etc/nova/rootwrap.d directory exists
+  file:
+    dest: /etc/nova/rootwrap.d
+    owner: root
+    group: root
+    mode: 0755
+    state: directory
+
+- name: update rootwrap docker.filters from template
+  template:
+    owner: root
+    group: root
+    mode: 0755
+    src: etc/nova/rootwrap.d/docker.filters
+    dest: /etc/nova/rootwrap.d/docker.filters
+
+- name: ensure required links are in place
+  file:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    state: link
+    force: yes
+  with_items: openstack_nova_compute_links
+  when: openstack_nova_compute_links|length > 0
+
+- name: ensure nova user is a member of the docker group
+  user:
+    name: nova
+    groups: docker
+    append: yes
+    state: present
+  register: nova_user_mod
+
+- name: ensure nova compute required services are started and enabled
+  service: 
+    name: "{{ item }}"
+    state: started 
+    enabled: yes
+  with_items: openstack_nova_compute_required_services
+  when: openstack_nova_compute_required_services|length > 0
+
+- name: ensure that openvswitch integration bridge exists
+  openvswitch_bridge:
+    bridge: br-int
+    state: present
+ 
+- name: ensure nova compute services are started and enabled
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  with_items: openstack_nova_compute_services
+  when: openstack_nova_compute_services|length > 0

@@ -8,12 +8,15 @@ openstack_nova_compute_package_info:
   pre_pkgs:
     - curl
     - git
+    - ubuntu-cloud-keyring
   pkgs:
     - nova-compute-lxc
     - neutron-common
     - neutron-plugin-ml2
     - neutron-plugin-openvswitch-agent
-  post_commands: []
+    - openvswitch-datapath-dkms
+  post_commands:
+    - service openvswitch-force-reload-kmod start
 
 openstack_nova_compute_repo_info:
   pkg_repo: apt_repository
@@ -21,7 +24,9 @@ openstack_nova_compute_repo_info:
     repo: "{{ item }}"
     update_cache: yes
     state: present
-  repos: []
+  repos:
+    - deb http://ubuntu-cloud.archive.canonical.com/ubuntu precise-updates/icehouse main
+    - deb-src http://ubuntu-cloud.archive.canonical.com/ubuntu precise-updates/icehouse main
 
 openstack_nova_compute_pip_path: /usr/local/bin/pip
 

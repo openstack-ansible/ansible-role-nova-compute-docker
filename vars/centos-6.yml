@@ -1,4 +1,4 @@
-openstack_compute_package_info:
+openstack_nova_compute_package_info:
   pkg_mgr: yum
   args:
     pkg: "{{ item }}"
@@ -17,8 +17,9 @@ openstack_compute_package_info:
     - openstack-nova-compute
     - openstack-neutron-ml2
     - openstack-neutron-openvswitch
+  post_commands: []
 
-openstack_compute_repo_info:
+openstack_nova_compute_repo_info:
   pkg_repo: yum
   args: 
     name: "{{ item }}"
@@ -26,23 +27,20 @@ openstack_compute_repo_info:
   repos: 
     - http://repos.fedorapeople.org/repos/openstack/openstack-icehouse/rdo-release-icehouse-4.noarch.rpm
 
-openstack_compute_pip_path: /usr/bin/pip
+openstack_nova_compute_pip_path: /usr/bin/pip
 
-openstack_compute_nova_docker_module_path: 
+openstack_nova_compute_nova_docker_module_path: 
   /usr/lib/python2.6/site-packages/novadocker
 
-openstack_compute_links:
+openstack_nova_compute_links:
   - { src: /etc/neutron/plugins/ml2/ml2_conf.ini, 
       dest: /etc/neutron/plugins/openvswitch/ovs_neutron_plugin.ini }
 
-openstack_compute_required_services:
+openstack_nova_compute_required_services:
  - libvirtd
  - messagebus
  - openvswitch
 
-openstack_compute_nova_services:
+openstack_nova_compute_services:
  - openstack-nova-compute
-
-openstack_compute_neutron_services:
  - neutron-openvswitch-agent
-

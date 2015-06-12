@@ -1,0 +1,185 @@
+---
+# FIXME: my_ip should always be an ip address, so do lookup in case it's a
+# host...
+
+- name: ensure nova.conf is properly configured
+  ini_file:
+    dest: /etc/nova/nova.conf
+    group: nova
+    mode: 0640
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+    - { section: DEFAULT,
+        option: verbose, value: "{{ openstack_log_verbose }}" }
+    - { section: DEFAULT, option: debug, value: "{{ openstack_log_debug }}" }
+    - { section: DEFAULT, option: log_dir, value: /var/log/nova }
+    - { section: DEFAULT, option: rpc_backend, value: rabbit }
+    - { section: DEFAULT,
+        option: rabbit_host, value: "{{ openstack_rabbitmq_host }}" }
+    - { section: DEFAULT,
+        option: rabbit_hosts, value: "{{ openstack_rabbitmq_host }}" }
+    - { section: DEFAULT, option: rabbit_port,
+        value: "{{ openstack_rabbitmq_port }}" }
+    - { section: DEFAULT, option: rabbit_userid, value: nova }
+    - { section: DEFAULT, option: rabbit_password,
+        value: "{{ openstack_rabbitmq_nova_password }}" }
+    - { section: DEFAULT, option: rabbit_virtual_host, value: /nova }
+    - { section: DEFAULT, option: glance_host,
+        value: "{{ openstack_image_endpoint_host }}" }
+    - { section: DEFAULT, 
+        option: my_ip, value: "{{ openstack_compute_node_ip }}" }
+    - { section: DEFAULT, option: vnc_enabled, value: true }
+    - { section: DEFAULT, option: vncserver_listen,
+        value: "{{ openstack_vncserver_bind_address }}" }
+    - { section: DEFAULT, option: vncserver_proxyclient_address,
+        value: "{{ openstack_compute_node_ip }}" }
+    - { section: DEFAULT, option: novncproxy_base_url,
+        value: "http://{{ openstack_compute_endpoint_host }}:6080/vnc_auto.html" }
+    - { section: DEFAULT, option: auth_strategy, value: keystone }
+    - { section: DEFAULT,
+        option: network_api_class, value: nova.network.neutronv2.api.API }
+    - { section: DEFAULT,
+        option: neutron_url, value: "{{ openstack_network_internal_url }}" }
+    - { section: DEFAULT, option: neutron_auth_strategy, value: keystone }
+    - { section: DEFAULT, option: neutron_admin_tenant_name, value: service }
+    - { section: DEFAULT, option: neutron_admin_username, value: neutron }
+    - { section: DEFAULT, option: neutron_admin_password,
+        value: "{{ openstack_identity_neutron_password }}" }
+    - { section: DEFAULT, option: neutron_admin_auth_url,
+        value: "{{ openstack_identity_internal_url }}" }
+    - { section: DEFAULT, option: linuxnet_interface_driver,
+        value: nova.network.linux_net.LinuxOVSInterfaceDriver }
+    - { section: DEFAULT,
+        option: firewall_driver, value: nova.virt.firewall.NoopFirewallDriver }
+    - { section: DEFAULT, option: security_group_api, value: neutron }
+    - { section: database, option: connection,
+        value: "mysql://nova:{{ openstack_mysql_nova_password }}@{{
+                  openstack_mysql_host }}:{{ openstack_mysql_port }}/nova" }
+    - { section: keystone_authtoken,
+        option: auth_uri, value: "{{ openstack_identity_internal_url }}" }
+    - { section: keystone_authtoken, option: auth_host,
+        value: "{{ openstack_identity_endpoint_host }}" }
+    - { section: keystone_authtoken, option: auth_port, value: 35357 }
+    - { section: keystone_authtoken, option: auth_protocol, value: http }
+    - { section: keystone_authtoken, option: admin_tenant_name,
+        value: service }
+    - { section: keystone_authtoken, option: admin_user, value: nova }
+    - { section: keystone_authtoken, option: admin_password,
+        value: "{{ openstack_identity_nova_password }}" }
+  register: modify_nova_ini
+
+- name: ensure nova-compute.conf is properly configured
+  ini_file:
+    dest: /etc/nova/nova-compute.conf
+    group: nova
+    mode: 0640
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+    - { section: DEFAULT,
+        option: verbose, value: "{{ openstack_log_verbose }}" }
+    - { section: DEFAULT, option: debug, value: "{{ openstack_log_debug }}" }
+    - { section: DEFAULT, option: log_dir, value: /var/log/nova }
+    - { section: DEFAULT,
+        option: compute_driver, value: novadocker.virt.docker.DockerDriver }
+  register: modify_nova_compute_ini
+
+- name: restart nova services if necessary
+  shell: >
+    for file in /etc/init*/{,openstack-}nova-*; do 
+      [ -f $file ] && service $(basename $file .conf) restart; 
+    done
+  args:
+    executable: /bin/bash
+  when: modify_nova_ini|changed or
+        modify_nova_compute_ini|changed
+
+- name: ensure neutron.conf is properly configured
+  ini_file:
+    dest: /etc/neutron/neutron.conf
+    group: neutron
+    mode: 0640
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+    - { section: DEFAULT,
+        option: verbose, value: "{{ openstack_log_verbose }}" }
+    - { section: DEFAULT, option: debug, value: "{{ openstack_log_debug }}" }
+    - { section: DEFAULT, option: log_dir, value: /var/log/neutron }
+    - { section: DEFAULT,
+        option: rpc_backend, value: neutron.openstack.common.rpc.impl_kombu }
+    - { section: DEFAULT,
+        option: rabbit_host, value: "{{ openstack_rabbitmq_host }}" }
+    - { section: DEFAULT,
+        option: rabbit_hosts, value: "{{ openstack_rabbitmq_host }}" }
+    - { section: DEFAULT,
+        option: rabbit_port, value: "{{ openstack_rabbitmq_port }}" }
+    - { section: DEFAULT, option: rabbit_userid, value: neutron }
+    - { section: DEFAULT, option: rabbit_password,
+        value: "{{ openstack_rabbitmq_neutron_password }}" }
+    - { section: DEFAULT, option: rabbit_virtual_host, value: /neutron }
+    - { section: DEFAULT, option: auth_strategy, value: keystone }
+    - { section: DEFAULT, option: core_plugin, value: ml2 }
+    - { section: DEFAULT, option: service_plugins, value: router }
+    - { section: DEFAULT, option: allow_overlapping_ips, value: true }
+    - { section: keystone_authtoken, option: auth_uri,
+        value: "{{ openstack_identity_internal_url }}" }
+    - { section: keystone_authtoken, option: auth_host,
+        value: "{{ openstack_identity_endpoint_host }}" }
+    - { section: keystone_authtoken, option: auth_port, value: 35357 }
+    - { section: keystone_authtoken, option: auth_protocol, value: http }
+    - { section: keystone_authtoken, option: admin_tenant_name,
+        value: service }
+    - { section: keystone_authtoken, option: admin_user, value: neutron }
+    - { section: keystone_authtoken, option: admin_password,
+        value: "{{ openstack_identity_neutron_password }}" }
+  register: modify_neutron_ini
+
+- name: ensure ml2_conf.ini is properly configured
+  ini_file:
+    dest: /etc/neutron/plugins/ml2/ml2_conf.ini
+    group: neutron
+    mode: 0640
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+    - { section: DEFAULT, 
+        option: verbose, value: "{{ openstack_log_verbose }}" }
+    - { section: DEFAULT, option: debug, value: "{{ openstack_log_debug }}" }
+    - { section: DEFAULT, option: log_dir, value: /var/log/neutron }
+    - { section: ml2, option: type_drivers, value: gre }
+    - { section: ml2, option: tenant_network_types, value: gre }
+    - { section: ml2, option: mechanism_drivers, value: openvswitch }
+    - { section: ml2_type_gre, option: tunnel_id_ranges, value: "1:1000" }
+    - { section: ovs, option: local_ip,
+        value: "{{ openstack_compute_node_ip }}" }
+    - { section: ovs, option: tunnel_type, value: gre }
+    - { section: ovs, option: enable_tunneling, value: true }
+    - { section: securitygroup, option: firewall_driver,
+        value: 
+          neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver 
+      }
+    - { section: securitygroup, option: enable_security_group, value: true }
+  register: modify_ml2_ini
+
+- name: restart neutron services if necessary
+  shell: >
+    ls /etc/init*/neutron-* | grep -v ovs | while read file; do
+      [ -f $file ] && service $(basename $file .conf) restart;
+    done
+  args:
+    executable: /bin/bash
+  when: modify_neutron_ini|changed or modify_ml2_ini|changed
+
+- name: ensure nova and neutron sqlite are deleted
+  file:
+    dest: /var/lib/nova/{{ item }}.sqlite
+    state: absent
+  with_items:
+    - nova
+    - neutron
