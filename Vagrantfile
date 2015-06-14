@@ -14,6 +14,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       v.memory = 2048
     end
   end
+
+   config.vm.define "ubuntu-precise", autostart: false do |m|
+    m.vm.box = "ubuntu/precise64"
+    m.vm.hostname="ubuntu-precise"
+    m.vm.network :private_network, ip: "10.1.0.4", :netmask => "255.255.0.0"
+    m.vm.provider :virtualbox do |v|
+      v.memory = 2048
+    end
+  end
   
   config.vm.define "ubuntu-trusty", primary: true do |m|
     m.vm.box = "ubuntu/trusty64"
