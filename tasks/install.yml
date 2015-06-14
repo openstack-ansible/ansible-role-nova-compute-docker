@@ -27,13 +27,6 @@
   args: openstack_nova_compute_package_info.args
   with_items: openstack_nova_compute_package_info.pkgs
   when: openstack_nova_compute_package_info.pkgs|length > 0
-  register: openstack_nova_compute_package_install
-
-- name: run post-install commands if necessary
-  command: "{{ item }}"
-  with_items: openstack_nova_compute_package_info.post_commands
-  when: openstack_nova_compute_package_info.post_commands|length > 0 and
-        openstack_nova_compute_package_install|changed
 
 - name: ensure that pip is installed
   shell: curl -s https://bootstrap.pypa.io/get-pip.py | python -

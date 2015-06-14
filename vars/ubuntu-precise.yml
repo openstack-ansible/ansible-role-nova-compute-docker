@@ -8,15 +8,14 @@ openstack_nova_compute_package_info:
   pre_pkgs:
     - curl
     - git
+    - openvswitch-datapath-dkms
+    - openvswitch-switch
     - ubuntu-cloud-keyring
   pkgs:
     - nova-compute-lxc
     - neutron-common
     - neutron-plugin-ml2
     - neutron-plugin-openvswitch-agent
-    - openvswitch-datapath-dkms
-  post_commands:
-    - service openvswitch-force-reload-kmod start
 
 openstack_nova_compute_repo_info:
   pkg_repo: apt_repository
