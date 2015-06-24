@@ -47,14 +47,17 @@ openstack_mysql_port: 3306
 openstack_rabbitmq_host: 127.0.0.1
 openstack_rabbitmq_port: 5672
 
+#openstack_nova_compute_nova_docker_package: >
+#  git+https://github.com/stackforge/nova-docker@stable/icehouse#egg=novadocker
+
 openstack_nova_compute_nova_docker_package: >
-  git+https://github.com/marklee77/nova-docker@harness-demo#egg=novadocker
+  git+https://github.com/marklee77/nova-docker@fix-docker-1.7.0#egg=novadocker
 
 openstack_compute_node_ip: "{{ ansible_default_ipv4.address }}"
 openstack_vncserver_bind_address: "{{ openstack_compute_node_ip }}"
 
 openstack_log_verbose: true
-openstack_log_debug: false
+openstack_log_debug: true
 
 openstack_identity_endpoint_host: "{{ ansible_default_ipv4.address }}"
 openstack_identity_admin_url: >
