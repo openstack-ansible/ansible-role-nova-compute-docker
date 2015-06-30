@@ -57,7 +57,7 @@ openstack_compute_node_ip: "{{ ansible_default_ipv4.address }}"
 openstack_vncserver_bind_address: "{{ openstack_compute_node_ip }}"
 
 openstack_log_verbose: true
-openstack_log_debug: true
+openstack_log_debug: false
 
 openstack_identity_endpoint_host: "{{ ansible_default_ipv4.address }}"
 openstack_identity_admin_url: >
