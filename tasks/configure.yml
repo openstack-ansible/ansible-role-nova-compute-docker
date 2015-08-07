@@ -150,13 +150,14 @@
         option: verbose, value: "{{ openstack_log_verbose }}" }
     - { section: DEFAULT, option: debug, value: "{{ openstack_log_debug }}" }
     - { section: DEFAULT, option: log_dir, value: /var/log/neutron }
-    - { section: ml2, option: type_drivers, value: gre }
-    - { section: ml2, option: tenant_network_types, value: gre }
+    - { section: ml2, option: type_drivers, value: vlan }
+    - { section: ml2, option: tenant_network_types, value: vlan }
     - { section: ml2, option: mechanism_drivers, value: openvswitch }
-    - { section: ml2_type_gre, option: tunnel_id_ranges, value: "1:1000" }
+    - { section: ml2_type_vlan, 
+        option: network_vlan_ranges, value: "physnet:1000:1999" }
     - { section: ovs, option: local_ip,
         value: "{{ openstack_compute_node_ip }}" }
-    - { section: ovs, option: tunnel_type, value: gre }
+    - { section: ovs, option: tunnel_type, value: vlan }
     - { section: ovs, option: enable_tunneling, value: true }
     - { section: securitygroup, option: firewall_driver,
         value: 
