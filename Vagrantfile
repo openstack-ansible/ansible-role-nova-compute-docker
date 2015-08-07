@@ -32,9 +32,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       v.memory = 2048
       v.customize ["modifyvm", :id, "--nicpromisc2", "allow-vms"]
     end
-    m.vm.provision "ansible" do |ansible|
-      ansible.playbook = "getreqs.yml"
-    end
+    #m.vm.provision "ansible" do |ansible|
+    #  ansible.playbook = "getreqs.yml"
+    #end
     m.vm.provision "ansible" do |ansible|
       ansible.playbook = "prepare-vm.yml"
       ansible.extra_vars = {
