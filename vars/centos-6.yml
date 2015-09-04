@@ -24,7 +24,7 @@ openstack_nova_compute_repo_info:
     name: "{{ item }}"
     state: present
   repos: 
-    - http://repos.fedorapeople.org/repos/openstack/openstack-icehouse/rdo-release-icehouse-4.noarch.rpm
+    - http://repos.fedorapeople.org/repos/openstack/EOL/openstack-icehouse/rdo-release-icehouse-4.noarch.rpm
 
 openstack_nova_compute_pip_path: /usr/bin/pip
 
