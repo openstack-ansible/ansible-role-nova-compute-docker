@@ -1,6 +1,8 @@
 nova compute docker ansible role
 ================================
 
+[![DOI](https://zenodo.org/badge/7696/harnesscloud/ansible-role-nova-compute-docker.svg)](https://zenodo.org/badge/latestdoi/7696/harnesscloud/ansible-role-nova-compute-docker)
+
 The purpose of this role is to deploy nova-compute-docker onto Ubuntu. 
 
 Role Variables
